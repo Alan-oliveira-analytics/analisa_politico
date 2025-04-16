@@ -1,0 +1,65 @@
+# ----------------------------------------
+# Python
+# ----------------------------------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pdb
+*.egg
+*.egg-info/
+*.eggs/
+*.manifest
+*.spec
+
+# Ambiente virtual
+.venv/
+env/
+venv/
+
+# Arquivos de build/distribuição
+build/
+develop-eggs/
+dist/
+downloads/
+sdist/
+wheels/
+pip-wheel-metadata/
+*.egg-info/
+.installed.cfg
+
+# Arquivos temporários
+*.log
+*.tmp
+*.bak
+
+# ----------------------------------------
+# VS Code
+# ----------------------------------------
+.vscode/
+
+# ----------------------------------------
+# Jupyter Notebook
+# ----------------------------------------
+.ipynb_checkpoints/
+
+# ----------------------------------------
+# Arquivos do sistema
+# ----------------------------------------
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Icon?
+desktop.ini
+
+# ----------------------------------------
+# Variáveis de ambiente / dados sensíveis
+# ----------------------------------------
+.env
+.env.*
+
+# ----------------------------------------
+# Poetry lock file (opcional)
+# Pode ser incluído se você quer que cada dev gere o seu próprio lock
+# Se preferir travar dependências pra todo mundo, mantenha o poetry.lock
+poetry.lock
