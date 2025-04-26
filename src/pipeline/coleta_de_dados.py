@@ -36,13 +36,14 @@ dados = api.get_dados(endpoint='deputados')
 dados = dados['dados']
 
 df = pd.DataFrame(dados)
-df.to_csv('./data/tb_deputados.csv', index=False)
+# df.to_csv('./data/tb_deputados.csv', index=False)
 
 
 
 # Pegando as informações Gerais dos Deputados
 coluna_id = list(df['id'])
 deputados_informacoes = {}
+
 
 for x in coluna_id:
 # requisitar os dados
@@ -63,20 +64,20 @@ deputados_informacoes.head()
 
 deputados_informacoes.to_csv('./data/info_deputados.csv')
 
-
+coluna_id = [204379, 220714, 221328]
 # Pegando as informações de despesa
 despesas_deputados = {}
 for x in coluna_id:
-# requisitar os dados
+    # requisitar os dados
     dados = api.get_dados(endpoint=f'deputados/{x}/despesas')
-    dados.keys()
-    print(dados)
-    despesas_deputados[dados['id']] = dados
+    dados = dados['dados']
+    despesas_deputados[x] = dados  # Use 'x' (deputy ID) as the key
+print(despesas_deputados)
 
 despesas_deputados = pd.DataFrame(despesas_deputados)
-despesas_deputados = despesas_deputados.T
-despesas_deputados.reset_index(drop=True, inplace=True)
-
+# despesas_deputados = despesas_deputados.T
+# despesas_deputados.reset_index(drop=True, inplace=True)
+print(despesas_deputados)
 despesas_deputados.to_csv('./data/info_despesas.csv')
 
 
