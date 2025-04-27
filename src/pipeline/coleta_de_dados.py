@@ -16,25 +16,19 @@ import os
 """ ----------------CONFIGURAÇÃO DE CAMINHO---------------- """
 # Caminho da raiz do projeto (dois níveis acima do script atual)
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
-
+print(ROOT_DIR)
 # Pasta de dados (dentro da raiz)
-ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
 DATA_DIR = os.path.join(ROOT_DIR, "data")
+print(DATA_DIR)
 
 if not os.path.exists(DATA_DIR):
+
     print(f"O diretório {DATA_DIR} não existe, criando...")
     os.makedirs(DATA_DIR, exist_ok=True)
-else:
-    print(f"O diretório {DATA_DIR} já existe.")
 
-# Testando a criação de um arquivo dentro do diretório
-try:
-    test_file_path = os.path.join(DATA_DIR, "test.txt")
-    with open(test_file_path, 'w') as f:
-        f.write("Teste de gravação!")
-    print(f"Arquivo criado com sucesso: {test_file_path}")
-except OSError as e:
-    print(f"Erro ao tentar gravar no diretório: {e}")
+else:
+
+    print(f"O diretório {DATA_DIR} já existe.")
 
     
 """ ----------------IMPORTAÇÃO CLASSE---------------- """
