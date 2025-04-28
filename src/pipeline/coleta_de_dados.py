@@ -12,23 +12,28 @@ import requests
 
 import sys
 import os
+from pathlib import Path
 
 """ ----------------CONFIGURAÇÃO DE CAMINHO---------------- """
-# Caminho da raiz do projeto (dois níveis acima do script atual)
-ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
-print(ROOT_DIR)
-# Pasta de dados (dentro da raiz)
-DATA_DIR = os.path.join(ROOT_DIR, "data")
-print(DATA_DIR)
+def create_directory(path: Path):
+    try:
+        path.mkdir(parents=True, exist_ok=True)
 
-if not os.path.exists(DATA_DIR):
+    except PermissionError as e:
+        print(f'[PERMISSION ERROR] Não foi possível criar: {path}')
+        raise
 
-    print(f"O diretório {DATA_DIR} não existe, criando...")
-    os.makedirs(DATA_DIR, exist_ok=True)
+    except OSError as e:
+        print(f'[OS ERROR] Erro geral ao criar: {path}')
+        raise
+    
+    else:
+        print(f'[OK] Diretório {path} pronto.')
 
-else:
 
-    print(f"O diretório {DATA_DIR} já existe.")
+DATA_DIR = Path(__file__).resolve().parents[2] / "data"
+create_directory(DATA_DIR)
+
 
     
 """ ----------------IMPORTAÇÃO CLASSE---------------- """
