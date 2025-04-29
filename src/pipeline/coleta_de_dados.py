@@ -47,10 +47,10 @@ from src.api.deputados_api import deputadoAPI
 api = deputadoAPI(base_url='https://dadosabertos.camara.leg.br/api/v2/')
 
 # requisição dos dados - Dimensão Deputados
-dados = api.get_dados(endpoint='deputados')
-dados = dados['dados']
+data = api.get_dados(endpoint='deputados')
+data = data['dados']
 
-df = pd.DataFrame(dados)
+df = pd.DataFrame(data)
 df.to_csv('./data/tb_deputados.csv', index=False)
 
 
@@ -62,11 +62,11 @@ deputados_informacoes = {}
 
 for x in coluna_id:
 # requisitar os dados
-    dados = api.get_dados(endpoint=f'deputados/{x}')
-    dados.keys()
+    data = api.get_dados(endpoint=f'deputados/{x}')
+    data.keys()
 
-    dados = dados['dados']
-    deputados_informacoes[dados['id']] = dados
+    data = data['dados']
+    deputados_informacoes[data['id']] = data
 
 deputados_informacoes = pd.DataFrame(deputados_informacoes)
 deputados_informacoes = deputados_informacoes.T
