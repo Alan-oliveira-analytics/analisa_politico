@@ -23,7 +23,6 @@ DATA_DIR = Path(__file__).resolve().parents[2] / "data"
 create_directory(DATA_DIR)
 
 
-
 """ ----------------LEITURA DF---------------- """
 
 csv_path = DATA_DIR / 'df_deputados.csv'
@@ -59,6 +58,10 @@ df['espectro_politico'] = df['siglaPartido'].map(espectro_politico)
 df_unique_id = df.sort_values(['id']).drop_duplicates('id', keep='first')
 
 
+df.head()
+df.columns
+
+
 
 
 # gráfico 1 - gastos por espectro politico
@@ -72,7 +75,8 @@ def grafico_1():
         x="espectro_politico",
         y="valorLiquido",
         title="Gastos por Espectro Político",
-        labels={"valorLiquido": "Total Gasto", "espectro_politico": "Espectro Político"}
+        labels={"valorLiquido": "Total Gasto", "espectro_politico": "Espectro Político"},
+        text_auto=True
     )
     return fig
 
@@ -82,12 +86,30 @@ def grafico_2():
     
     df_graph_2 = df_unique_id['espectro_politico'].value_counts().reset_index()
     
-    fig = px.pie(
+    fig = px.bar(
         df_graph_2,
-        names='espectro_politico',
-        values='count',
-        title="Distribuição de Políticos por Espectro"
+        x='espectro_politico',
+        y='count',
+        title="Distribuição de Políticos por Espectro",
+        text_auto=True
     )
     
     return fig
 
+
+def grafico_3():
+
+    df_graph_3 = df.groupby(['nomeFornecedor'])['valorLiquido'].sum().nlargest(10).reset_index()
+
+    fig = px.bar(
+        df_graph_3,
+        x='valorLiquido',
+        y='nomeFornecedor',
+        title='TOP 10 - Gastos por Fornecedor',
+        text_auto=True,
+        orientation='h',
+    )
+    #invertendo para mostrar do maior para o menor
+    fig = fig.update_yaxes(categoryorder='total ascending')
+
+    return fig
