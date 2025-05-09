@@ -97,6 +97,7 @@ def grafico_2():
     return fig
 
 
+# top 10 gastos por fornecedor
 def grafico_3():
 
     df_graph_3 = df.groupby(['nomeFornecedor'])['valorLiquido'].sum().nlargest(10).reset_index()
@@ -106,6 +107,26 @@ def grafico_3():
         x='valorLiquido',
         y='nomeFornecedor',
         title='TOP 10 - Gastos por Fornecedor',
+        text_auto=True,
+        orientation='h',
+    )
+    #invertendo para mostrar do maior para o menor
+    fig = fig.update_yaxes(categoryorder='total ascending')
+
+    return fig
+
+
+
+# top 10 gastos por tipo de despesa
+def grafico_4():
+
+    df_graph_3 = df.groupby(['tipoDespesa'])['valorLiquido'].sum().nlargest(10).reset_index()
+
+    fig = px.bar(
+        df_graph_3,
+        x='valorLiquido',
+        y='tipoDespesa',
+        title='TOP 10 - Gastos por Tipo de Despesa',
         text_auto=True,
         orientation='h',
     )
