@@ -1,8 +1,65 @@
 from dash import html, dcc
+import pandas as pd
+from pathlib import Path
 from .charts import grafico_1
 from .charts import grafico_2
 from .charts import grafico_3
 from .charts import grafico_4
+
+""" ----------------CONFIGURAÇÃO DE CAMINHO---------------- """
+def create_directory(path: Path):
+    try:
+        path.mkdir(parents=True, exist_ok=True)
+
+    except PermissionError as e:
+        print(f'[PERMISSION ERROR] Não foi possível criar: {path}')
+        raise
+
+    except OSError as e:
+        print(f'[OS ERROR] Erro geral ao criar: {path}')
+        raise
+    
+    else:
+        print(f'[OK] Diretório {path} pronto.')
+
+
+DATA_DIR = Path(__file__).resolve().parents[2] / "data"
+create_directory(DATA_DIR)
+
+
+""" ----------------LEITURA DF---------------- """
+
+csv_path = DATA_DIR / 'df_deputados.csv'
+df = pd.read_csv(csv_path)
+
+# Adicionando a nova coluna com base no espectro político
+espectro_politico = {
+    'PL': 'Centro-direita',
+    'PT': 'Esquerda',
+    'UNIÃO': 'Centro-direita',
+    'PP': 'Centro-direita',
+    'REPUBLICANOS': 'Direita',
+    'PSD': 'Centro',
+    'MDB': 'Centro',
+    'PDT': 'Centro-esquerda',
+    'PODE': 'Centro-direita',
+    'PSB': 'Centro-esquerda',
+    'PSOL': 'Esquerda',
+    'PSDB': 'Centro',
+    'PCdoB': 'Esquerda',
+    'AVANTE': 'Centro',
+    'PV': 'Centro-esquerda',
+    'NOVO': 'Direita',
+    'PRD': 'Direita',
+    'CIDADANIA': 'Centro-esquerda',
+    'SOLIDARIEDADE': 'Centro-esquerda',
+    'REDE': 'Centro-esquerda'
+}
+
+df['espectro_politico'] = df['siglaPartido'].map(espectro_politico)
+
+
+df.columns
 
 opcoes_espectro = ['Direita', 'Esquerda', 'Centro', 'Centro-direita', 'Centro-esquerda']
 
@@ -47,7 +104,7 @@ def cria_layout():
     html.Div([
         dcc.Graph(
         id='grafico_gastos_por_fornecedor',
-        figure=grafico_3()
+        figure=grafico_3(df)
     )], style={'width': '50%', 'display': 'inline-block'}),
 
   

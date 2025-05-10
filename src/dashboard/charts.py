@@ -53,7 +53,7 @@ espectro_politico = {
 
 # Adicionando a nova coluna com base no espectro político
 df['espectro_politico'] = df['siglaPartido'].map(espectro_politico)
-
+df.columns
 # criando uma variável que comporta id's únicos
 df_unique_id = df.sort_values(['id']).drop_duplicates('id', keep='first')
 
@@ -98,7 +98,11 @@ def grafico_2():
 
 
 # top 10 gastos por fornecedor
-def grafico_3():
+def grafico_3(df, espectro=None, partido=None):
+    
+    if espectro:
+        df = df[df['espectro_politico'] == espectro]
+
 
     df_graph_3 = df.groupby(['nomeFornecedor'])['valorLiquido'].sum().nlargest(10).reset_index()
 
