@@ -103,6 +103,8 @@ def grafico_3(df, espectro=None, partido=None):
     if espectro:
         df = df[df['espectro_politico'] == espectro]
 
+    if partido:
+        df = df[df['siglaPartido'] == partido]
 
     df_graph_3 = df.groupby(['nomeFornecedor'])['valorLiquido'].sum().nlargest(10).reset_index()
 
@@ -122,7 +124,13 @@ def grafico_3(df, espectro=None, partido=None):
 
 
 # top 10 gastos por tipo de despesa
-def grafico_4():
+def grafico_4(df, espectro=None, partido=None):
+
+    if espectro:
+        df = df[df['espectro_politico'] == espectro]
+
+    if partido:
+        df = df[df['siglaPartido'] == partido]
 
     df_graph_3 = df.groupby(['tipoDespesa'])['valorLiquido'].sum().nlargest(10).reset_index()
 

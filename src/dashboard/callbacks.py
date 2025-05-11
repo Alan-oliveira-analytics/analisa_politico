@@ -1,6 +1,7 @@
 from dash import Dash, dcc, html, Input, Output, callback
 import pandas as pd
 from .charts import grafico_3
+from .charts import grafico_4
 from pathlib import Path
 
 """ ----------------CONFIGURAÇÃO DE CAMINHO---------------- """
@@ -59,11 +60,28 @@ df['espectro_politico'] = df['siglaPartido'].map(espectro_politico)
 
 def registro_callback(app):
     @app.callback(
-        Output('grafico_gastos_por_fornecedor', 'figure'),
-        Input('drop_espectro', 'value')
+        Output('grafico_gastos_por_fornecedor', 'figure', allow_duplicate=True),
+        Input('drop_espectro', 'value'),
+        prevent_initial_call=True
     )
     def atualizar_grafico(espectro):
         return grafico_3(df, espectro=espectro)
 
 
+    @app.callback(
+        Output('grafico_gastos_por_fornecedor', 'figure'),
+        Input('drop_partido', 'value'),
+        
+    )
 
+    def atualizar_grafico_partido(partido):
+        return grafico_3(df, partido=partido)
+    
+
+    @app.callback(
+        Output('grafico_gastos_por_despesa', 'figure'),
+        Input('drop_partido', 'value'),
+    )
+
+    def atualizar_grafico_despesa(partido):
+        return grafico_4(df, partido=partido)

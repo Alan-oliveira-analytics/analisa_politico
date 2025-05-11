@@ -92,11 +92,13 @@ def cria_layout():
 
 
     html.Div([
+        'Filtre por espectro político:',
         dcc.Dropdown(opcoes_espectro, 'Todos', id='drop_espectro'),
     ], style={'width': '50%', 'display': 'inline-block'}),
-    
+
 
     html.Div([
+        'Filtre por partido:',
         dcc.Dropdown(opcoes_partido, value='Todos', id='drop_partido'),
     ], style={'width': '50%', 'display': 'inline-block'}),
 
@@ -111,6 +113,6 @@ def cria_layout():
     html.Div([
         dcc.Graph(
         id='grafico_gastos_por_despesa',
-        figure=grafico_4()
+        figure=grafico_4(df)
     )], style={'width': '50%', 'display': 'inline-block'}),
 ])
