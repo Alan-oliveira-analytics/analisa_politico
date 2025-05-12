@@ -1,10 +1,14 @@
-from dash import html, dcc
+# Essenciais
 import pandas as pd
 from pathlib import Path
-from .charts import grafico_1
-from .charts import grafico_2
-from .charts import grafico_3
-from .charts import grafico_4
+
+# Dash
+from dash import html, dcc
+import dash_bootstrap_components as dbc
+
+# Gráficos
+from .charts import grafico_1, grafico_2, grafico_3, grafico_4
+
 
 """ ----------------CONFIGURAÇÃO DE CAMINHO---------------- """
 def create_directory(path: Path):
@@ -67,16 +71,78 @@ opcoes_partido = ['MDB', 'REPUBLICANOS', 'PL', 'PSDB', 'NOVO', 'PP', 'PDT', 'PT'
        'CIDADANIA', 'UNIÃO', 'PCdoB', 'PV', 'AVANTE', 'PSD',
        'SOLIDARIEDADE', 'PSB', 'PODE', 'PSOL', 'PRD', 'REDE']
 
+
+# Estilo do layout
+sidebar_style = {
+    'position': 'fixed',
+    'top': 0,
+    'left': 0,
+    'bottom': 0,
+    'width': '16%',
+    'padding': '20px',
+    'background-color': '#f8f9fa',
+}
+
+content_style = {
+    'margin-left': '18rem',
+    'padding': '20px',
+    'background-color': '#ffffff',
+}
+
+sidebar = html.Div(
+    [
+        html.H1(f'Dashboard', style={'font-size': '36px'}),
+        html.Hr(),
+        html.P(
+            'Análise de gastos de políticos',
+            style={'font-size': '20px', 'color': '#6c757d'}
+        ),
+        html.Hr(),
+        dbc.Nav(
+            [
+                dbc.NavLink("Página 1", href="/pagina-1", active="exact"),
+                dbc.NavLink("Página 2", href="/pagina-2", active="exact"),
+            ],
+            vertical=True,
+            pills=True,
+        ),
+    ],
+    style=sidebar_style
+)
+
+
 def cria_layout():
 
 
-    return html.Div([
+    return  html.Div([
+        #sidebar
+        html.Div(
+    [
+        html.H1(f'Dashboard', style={'font-size': '36px'}),
+        html.Hr(),
+        html.P(
+            'Análise de gastos de políticos',
+            style={'font-size': '20px', 'color': '#6c757d'}
+        ),
+        html.Hr(),
+        dbc.Nav(
+            [
+                dbc.NavLink("Página 1", href="/pagina-1", active="exact"),
+                dbc.NavLink("Página 2", href="/pagina-2", active="exact"),
+            ],
+            vertical=True,
+            pills=True,
+        ),
+    ],
+    style=sidebar_style
+    ),
+   
+    # Conteúdo principal
     html.H1(
         children='Dashboard Análise Políticos',
         style={'textAlign': 'center'}
     ),
     
-
     html.Div([
         dcc.Graph(
         id='grafico_gastos_espectro_politico',
