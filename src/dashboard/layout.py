@@ -7,7 +7,7 @@ from dash import html, dcc
 import dash_bootstrap_components as dbc
 
 # Gráficos
-from .charts import grafico_1, grafico_2, grafico_3, grafico_4
+from .charts import grafico_1, grafico_2, grafico_3, grafico_4, grafico_5
 
 
 """ ----------------CONFIGURAÇÃO DE CAMINHO---------------- """
@@ -71,6 +71,7 @@ opcoes_partido = ['MDB', 'REPUBLICANOS', 'PL', 'PSDB', 'NOVO', 'PP', 'PDT', 'PT'
        'CIDADANIA', 'UNIÃO', 'PCdoB', 'PV', 'AVANTE', 'PSD',
        'SOLIDARIEDADE', 'PSB', 'PODE', 'PSOL', 'PRD', 'REDE']
 
+opcoes_politico = df['nome'].unique().tolist()
 
 # Estilo do layout
 sidebar_style = {
@@ -88,27 +89,6 @@ content_style = {
     'padding': '20px',
     'background-color': '#ffffff',
 }
-
-sidebar = html.Div(
-    [
-        html.H1(f'Dashboard', style={'font-size': '36px'}),
-        html.Hr(),
-        html.P(
-            'Análise de gastos de políticos',
-            style={'font-size': '20px', 'color': '#6c757d'}
-        ),
-        html.Hr(),
-        dbc.Nav(
-            [
-                dbc.NavLink("Página 1", href="/pagina-1", active="exact"),
-                dbc.NavLink("Página 2", href="/pagina-2", active="exact"),
-            ],
-            vertical=True,
-            pills=True,
-        ),
-    ],
-    style=sidebar_style
-)
 
 
 def cria_layout():
@@ -133,11 +113,34 @@ def cria_layout():
             vertical=True,
             pills=True,
         ),
+        html.Hr(),
+
+        html.Div([
+            'Escolha o Político:',
+            dcc.Dropdown(opcoes_politico, value='Todos', id='drop_politico'),
+        ]),
+
+        html.Hr(),
+        html.Div([
+            'Filtre por espectro político:',
+            dcc.Dropdown(opcoes_espectro, 'Todos', id='drop_espectro'),
+        ]),
+
+        html.Hr(),
+        html.Div([
+            'Filtre por partido:',
+            dcc.Dropdown(opcoes_partido, value='Todos', id='drop_partido'),
+        ]),
+
     ],
     style=sidebar_style
     ),
    
+    
     # Conteúdo principal
+    html.Div([  # div principal que vai conter o conteúdo
+
+
     html.H1(
         children='Dashboard Análise Políticos',
         style={'textAlign': 'center'}
@@ -145,8 +148,8 @@ def cria_layout():
     
     html.Div([
         dcc.Graph(
-        id='grafico_gastos_espectro_politico',
-        figure=grafico_1(),
+        id='grafico_gastos_sazonalidade',
+        figure=grafico_5(df),
     )], style={'width': '50%', 'display': 'inline-block'}),
 
     
@@ -155,19 +158,6 @@ def cria_layout():
         id='grafico_politicos_por_espectro',
         figure=grafico_2()
     )], style={'width': '50%', 'display': 'inline-block'}),
-
-
-    html.Div([
-        'Filtre por espectro político:',
-        dcc.Dropdown(opcoes_espectro, 'Todos', id='drop_espectro'),
-    ], style={'width': '50%', 'display': 'inline-block'}),
-
-
-    html.Div([
-        'Filtre por partido:',
-        dcc.Dropdown(opcoes_partido, value='Todos', id='drop_partido'),
-    ], style={'width': '50%', 'display': 'inline-block'}),
-
 
     html.Div([
         dcc.Graph(
@@ -181,4 +171,8 @@ def cria_layout():
         id='grafico_gastos_por_despesa',
         figure=grafico_4(df)
     )], style={'width': '50%', 'display': 'inline-block'}),
-])
+
+
+
+        ])], style=content_style
+)

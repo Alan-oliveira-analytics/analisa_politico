@@ -54,13 +54,10 @@ espectro_politico = {
 # Adicionando a nova coluna com base no espectro político
 df['espectro_politico'] = df['siglaPartido'].map(espectro_politico)
 df.columns
-# criando uma variável que comporta id's únicos
-df_unique_id = df.sort_values(['id']).drop_duplicates('id', keep='first')
-
 
 df.head()
-df.columns
-
+# criando uma variável que comporta id's únicos
+df_unique_id = df.sort_values(['id']).drop_duplicates('id', keep='first')
 
 
 
@@ -98,7 +95,9 @@ def grafico_2():
 
 
 # top 10 gastos por fornecedor
-def grafico_3(df, espectro=None, partido=None):
+def grafico_3(df, espectro=None, partido=None, politico=None):
+    if politico:
+        df = df[df['nome'] == politico]
     
     if espectro:
         df = df[df['espectro_politico'] == espectro]
@@ -124,7 +123,9 @@ def grafico_3(df, espectro=None, partido=None):
 
 
 # top 10 gastos por tipo de despesa
-def grafico_4(df, espectro=None, partido=None):
+def grafico_4(df, espectro=None, partido=None, politico=None):
+    if politico:
+        df = df[df['nome'] == politico]
 
     if espectro:
         df = df[df['espectro_politico'] == espectro]
@@ -145,4 +146,34 @@ def grafico_4(df, espectro=None, partido=None):
     #invertendo para mostrar do maior para o menor
     fig = fig.update_yaxes(categoryorder='total ascending')
 
+    return fig
+
+
+# gráfico 5 - Sazonalidadee
+def grafico_5(df, espectro=None, partido=None, politico=None):
+    if politico:
+        df = df[df['nome'] == politico]
+    if espectro:
+        df = df[df['espectro_politico'] == espectro]
+    if partido:
+        df = df[df['siglaPartido'] == partido]
+
+    df['ano'] = pd.to_datetime(df['dataDocumento']).dt.year
+    df['mes'] = pd.to_datetime(df['dataDocumento']).dt.month
+    df["mes"] = df["mes"].astype(str)
+    df_graph_5 = df.groupby(['ano', 'mes'])['valorLiquido'].sum().reset_index()
+
+    fig = px.line(
+        df_graph_5,
+        x='mes',
+        y='valorLiquido',
+        color='ano',
+        title='Sazonalidade dos Gastos',
+        labels={'valorLiquido': '', 'mes': 'Mês'},
+        markers=True,
+        text='valorLiquido',
+        ).update_yaxes(showticklabels=False)
+        
+    fig.update_traces(texttemplate='%{y:.2s}', textposition='top center')
+    fig.update_layout(margin=dict(t=60, b=60))
     return fig

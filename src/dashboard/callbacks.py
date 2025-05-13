@@ -1,7 +1,6 @@
 from dash import Dash, dcc, html, Input, Output, callback
 import pandas as pd
-from .charts import grafico_3
-from .charts import grafico_4
+from .charts import grafico_3, grafico_4, grafico_5
 from pathlib import Path
 
 """ ----------------CONFIGURAÇÃO DE CAMINHO---------------- """
@@ -79,9 +78,25 @@ def registro_callback(app):
     
 
     @app.callback(
-        Output('grafico_gastos_por_despesa', 'figure'),
+        Output('grafico_gastos_por_despesa', 'figure', allow_duplicate=True),
         Input('drop_partido', 'value'),
+        prevent_initial_call=True
     )
 
     def atualizar_grafico_despesa(partido):
         return grafico_4(df, partido=partido)
+    
+    @app.callback(
+        Output('grafico_gastos_por_despesa', 'figure'),
+        Input('drop_politico', 'value'),
+    )
+    def atualizar_grafico_despesa_politico(politico):
+        return grafico_4(df, politico=politico)
+    
+
+    @app.callback(
+        Output('grafico_gastos_sazonalidade', 'figure'),
+        Input('drop_politico', 'value'),
+    )
+    def atualizar_grafico_sazonalidae(politico):
+        return grafico_5(df, politico=politico)
