@@ -115,21 +115,39 @@ df_final.shape
 df_final.to_csv('./data/despesas_deputados.csv')
 
 
+params = {
+    'dataInicio': '2025-01-01',
+    'dataFim': '2025-03-31',
+}
+
+# requisição dos dados - Proposições
+proposicoes = api.get_dados(endpoint='proposicoes')
+proposicoes = proposicoes['dados']
+proposicoes = pd.DataFrame(proposicoes)
+proposicoes
 
 
 
+# requisição dos dados - votação
+votacoes_org = api.get_dados(endpoint='votacoes', params=params)
+votacoes_org = votacoes_org['dados']
+votacoes_org = pd.DataFrame(votacoes_org)
+id_votacoes = list(votacoes_org['id'])
+id_votacoes
+
+votacoes_informacoes = {}
+for x in id_votacoes:
+    # requisitar os dados
+    votacoes = api.get_dados(endpoint=f'votacoes/{x}/votos')
+    votacoes = votacoes['dados']
+    votacoes_informacoes[votacoes['id']] = votacoes
+
+votacoes_informacoes = pd.DataFrame(votacoes_informacoes)   
+votacoes_informacoes = votacoes_informacoes.T
+votacoes_informacoes.reset_index(drop=True, inplace=True)
 
 
-
-
-
-
-
-
-
-
-
-
+votacoes_informacoes
 
 
 
