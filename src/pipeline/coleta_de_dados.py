@@ -55,10 +55,9 @@ df.to_csv('./data/tb_deputados.csv', index=False)
 
 
 
-# Pegando as informações Gerais dos Deputados
+""" ----------------INFORMAÇÕES GERAIS DOS DEPUTADOS---------------- """
 coluna_id = list(df['id'])
 deputados_informacoes = {}
-
 
 for x in coluna_id:
 # requisitar os dados
@@ -82,7 +81,7 @@ deputados_informacoes.to_csv('./data/info_deputados.csv')
 
 
 
-# Pegando as informações de despesa
+""" ----------------INFORMAÇÕES DE DESPESA---------------- """
 despesas_deputados = {}
 for x in coluna_id:
     # requisitar os dados
@@ -115,6 +114,7 @@ df_final.shape
 df_final.to_csv('./data/despesas_deputados.csv')
 
 
+""" ------------------COLETANDO OS DADOS DE PROPOSIÇÕES---------------- """ 
 params = {
     'dataInicio': '2025-01-01',
     'dataFim': '2025-03-31',
@@ -127,27 +127,40 @@ proposicoes = pd.DataFrame(proposicoes)
 proposicoes
 
 
+""" ------------------COLETANDO OS DADOS DE VOTAÇÃO---------------- """ 
 
 # requisição dos dados - votação
 votacoes_org = api.get_dados(endpoint='votacoes', params=params)
 votacoes_org = votacoes_org['dados']
 votacoes_org = pd.DataFrame(votacoes_org)
+votacoes_org.head()
 id_votacoes = list(votacoes_org['id'])
 id_votacoes
 
-votacoes_informacoes = {}
+""" ------------------ DETALHANDO VOTAÇÃO---------------- """ 
+
+votacoes_informacoes = pd.DataFrame()
 for x in id_votacoes:
     # requisitar os dados
     votacoes = api.get_dados(endpoint=f'votacoes/{x}/votos')
     votacoes = votacoes['dados']
-    votacoes_informacoes[votacoes['id']] = votacoes
+    votacoes = pd.DataFrame(votacoes)
+    votacoes['id_votacao'] = x
 
-votacoes_informacoes = pd.DataFrame(votacoes_informacoes)   
-votacoes_informacoes = votacoes_informacoes.T
-votacoes_informacoes.reset_index(drop=True, inplace=True)
+    # Verifica se a coluna 'deputado_' existe antes de expandir
+    if 'deputado_' not in votacoes.columns:
+        continue
+    else:
+        # Expande os valores da coluna 'deputado' em colunas separadas
+        deputado_df = pd.json_normalize(votacoes['deputado_'])
+        # Remove a coluna 'deputado' original e concatena as novas colunas
+        votacoes = pd.concat([votacoes.drop(columns=['deputado_']), deputado_df], axis=1)
+        
+        votacoes_informacoes = pd.concat([votacoes_informacoes, votacoes], ignore_index=True)       
+
+votacoes_informacoes.to_csv('./data/votacoes_informacoes.csv', index=False)
 
 
-votacoes_informacoes
 
 
 

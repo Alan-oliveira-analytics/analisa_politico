@@ -1,0 +1,35 @@
+name: Coleta Diária de Dados
+
+on:
+  schedule:
+    - cron: '0 7 * * *'  # 07:00 UTC = 04:00 no Brasil
+  workflow_dispatch:
+
+jobs:
+  coleta:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout do repositório
+      uses: actions/checkout@v3
+
+    - name: Instalar Poetry
+      run: |
+        curl -sSL https://install.python-poetry.org | python3 -
+        echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+    - name: Instalar dependências
+      run: poetry install
+
+    - name: Executar script de coleta
+      run: poetry run python src/pipeline/coleta_de_dados.py
+
+    - name: Commit e Push dos dados atualizados
+      run: |
+        git config --global user.name "github-actions"
+        git config --global user.email "github-actions@github.com"
+        git add data/
+        git commit -m "Atualização automática diária dos dados"
+        git push
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
