@@ -134,10 +134,11 @@ votacoes_org = api.get_dados(endpoint='votacoes', params=params)
 votacoes_org = votacoes_org['dados']
 votacoes_org = pd.DataFrame(votacoes_org)
 votacoes_org.head()
+votacoes_org['descricao'][0]
 id_votacoes = list(votacoes_org['id'])
 id_votacoes
 
-""" ------------------ DETALHANDO VOTAÇÃO---------------- """ 
+""" ------------------ INFORMAÇÕES DA VOTAÇÃO---------------- """ 
 
 votacoes_informacoes = pd.DataFrame()
 for x in id_votacoes:
@@ -160,7 +161,42 @@ for x in id_votacoes:
 
 votacoes_informacoes.to_csv('./data/votacoes_informacoes.csv', index=False)
 
+""" ------------------ DETALHAMENTO DA VOTAÇÃO---------------- """ 
 
+
+votacoes_detalhamento = pd.DataFrame()
+votacoes_detalhamento
+for x in id_votacoes:
+    # requisitar os dados
+    votacoes = api.get_dados(endpoint=f'votacoes/{x}')
+    votacoes
+    votacoes = votacoes['dados']
+    votacoes = pd.json_normalize(votacoes)
+    votacoes
+
+    # Verifica se a coluna existe antes de expandir
+    if 'efeitosRegistrados' not in votacoes.columns:
+        continue
+    else:
+        # Expande os valores da coluna em colunas separadas
+        efeitos = votacoes.explode('efeitosRegistrados')
+        efeitos_registrados = pd.json_normalize(efeitos['efeitosRegistrados'])
+        efeitos_registrados
+        objetos = votacoes.explode('objetosPossiveis')
+        objetos_possiveis = pd.json_normalize(objetos['objetosPossiveis'])
+        objetos_possiveis
+
+        proposicoes_afetadas = pd.json_normalize(votacoes['proposicoesAfetadas'])
+        proposicoes_afetadas
+        # Remove a coluna original e concatena as novas colunas
+        votacoes = pd.concat([votacoes.drop(columns=['efeitosRegistrados', 'objetosPossiveis', 'proposicoesAfetadas']), efeitos_registrados, objetos_possiveis, proposicoes_afetadas], axis=1)
+        votacoes = votacoes.rename(columns={'id': 'id_votacao'})
+
+
+        
+        votacoes_detalhamento = pd.concat([votacoes_detalhamento, votacoes], ignore_index=True)
+        votacoes_detalhamento  
+votacoes_detalhamento
 
 
 
