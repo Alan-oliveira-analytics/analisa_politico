@@ -163,6 +163,16 @@ votacoes_informacoes.to_csv('./data/votacoes_informacoes.csv', index=False)
 
 """ ------------------ DETALHAMENTO DA VOTAÇÃO---------------- """ 
 
+def expandir_coluna_json(df, coluna):
+    """
+    Expande uma coluna JSON em colunas separadas.
+    """
+    if coluna in df and not df[coluna].isnull().all():
+        df_explodido = df.explode(coluna)
+        col_expandidas = pd.json_normalize(df_explodido[coluna]).reset_index(drop=True)
+        return df_explodido.drop(columns=[coluna]).reset_index(drop=True), col_expandidas
+
+    return df.reset_index(drop=True), pd.DataFrame()
 
 votacoes_detalhamento = pd.DataFrame()
 votacoes_detalhamento
@@ -174,28 +184,20 @@ for x in id_votacoes:
     votacoes = pd.json_normalize(votacoes)
     votacoes
 
-    # Verifica se a coluna existe antes de expandir
-    if 'efeitosRegistrados' not in votacoes.columns:
-        continue
-    else:
-        # Expande os valores da coluna em colunas separadas
-        efeitos = votacoes.explode('efeitosRegistrados')
-        efeitos_registrados = pd.json_normalize(efeitos['efeitosRegistrados'])
-        efeitos_registrados
-        objetos = votacoes.explode('objetosPossiveis')
-        objetos_possiveis = pd.json_normalize(objetos['objetosPossiveis'])
-        objetos_possiveis
+    efeitos_registrados = expandir_coluna_json(votacoes, 'efeitosRegistrados')
+    objetos_possiveis = expandir_coluna_json(votacoes, 'objetosPossiveis')
+    proposicoes_afetadas = expandir_coluna_json(votacoes, 'proposicoesAfetadas')
+ 
 
-        proposicoes_afetadas = pd.json_normalize(votacoes['proposicoesAfetadas'])
-        proposicoes_afetadas
-        # Remove a coluna original e concatena as novas colunas
-        votacoes = pd.concat([votacoes.drop(columns=['efeitosRegistrados', 'objetosPossiveis', 'proposicoesAfetadas']), efeitos_registrados, objetos_possiveis, proposicoes_afetadas], axis=1)
-        votacoes = votacoes.rename(columns={'id': 'id_votacao'})
-
-
+    # Remove a coluna original e concatena as novas colunas
+    votacoes = pd.concat([votacoes.drop(columns=['efeitosRegistrados', 'objetosPossiveis', 'proposicoesAfetadas']), efeitos_registrados, objetos_possiveis, proposicoes_afetadas], axis=1)
+    votacoes = votacoes.rename(columns={'id': 'id_votacao'})
+    votacoes
         
-        votacoes_detalhamento = pd.concat([votacoes_detalhamento, votacoes], ignore_index=True)
-        votacoes_detalhamento  
+    votacoes_detalhamento = pd.concat([votacoes_detalhamento, votacoes], ignore_index=True)
+    votacoes_detalhamento  
+
+
 votacoes_detalhamento
 
 
