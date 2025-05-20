@@ -51,8 +51,15 @@ data = api.get_dados(endpoint='deputados')
 data = data['dados']
 
 df = pd.DataFrame(data)
-df.to_csv('./data/tb_deputados.csv', index=False)
+df.to_csv('./data/dimensao_deputados.csv', index=False)
 
+
+""" ----------------DIMENSÃO PARTIDOS---------------- """
+data_partidos = api.get_dados(endpoint='partidos')
+data_partidos = data_partidos['dados']
+data_partidos = pd.DataFrame(data_partidos)
+data_partidos.drop(columns=['uri'], inplace=True)
+data_partidos.to_csv('./data/dimensao_partidos.csv', index=False)
 
 
 """ ----------------INFORMAÇÕES GERAIS DOS DEPUTADOS---------------- """
@@ -159,6 +166,8 @@ for x in id_votacoes:
         
         votacoes_informacoes = pd.concat([votacoes_informacoes, votacoes], ignore_index=True)       
 
+votacoes_informacoes
+
 votacoes_informacoes.to_csv('./data/votacoes_informacoes.csv', index=False)
 
 """ ------------------ DETALHAMENTO DA VOTAÇÃO---------------- """ 
@@ -177,29 +186,26 @@ def expandir_coluna_json(df, coluna):
 votacoes_detalhamento = pd.DataFrame()
 votacoes_detalhamento
 for x in id_votacoes:
+
     # requisitar os dados
     votacoes = api.get_dados(endpoint=f'votacoes/{x}')
-    votacoes
     votacoes = votacoes['dados']
     votacoes = pd.json_normalize(votacoes)
     votacoes
 
-    efeitos_registrados = expandir_coluna_json(votacoes, 'efeitosRegistrados')
-    objetos_possiveis = expandir_coluna_json(votacoes, 'objetosPossiveis')
-    proposicoes_afetadas = expandir_coluna_json(votacoes, 'proposicoesAfetadas')
- 
-
-    # Remove a coluna original e concatena as novas colunas
-    votacoes = pd.concat([votacoes.drop(columns=['efeitosRegistrados', 'objetosPossiveis', 'proposicoesAfetadas']), efeitos_registrados, objetos_possiveis, proposicoes_afetadas], axis=1)
+    # expandir as colunas JSON
+    votacoes, efeitos_registrados = expandir_coluna_json(votacoes, 'efeitosRegistrados')
+    votacoes, efeitos_registrados = expandir_coluna_json(votacoes, 'efeitosRegistrados')
+    # renomear a coluna
     votacoes = votacoes.rename(columns={'id': 'id_votacao'})
-    votacoes
-        
+    
+    # concatenação vertical
     votacoes_detalhamento = pd.concat([votacoes_detalhamento, votacoes], ignore_index=True)
-    votacoes_detalhamento  
+    
 
-
+votacoes_detalhamento = votacoes_detalhamento.drop(columns=['uri', 'uriOrgao', 'uriEvento', 'objetosPossiveis', 'proposicoesAfetadas'])
 votacoes_detalhamento
 
-
+votacoes_detalhamento.to_csv('./data/votacoes_detalhamento.csv', index=False)
 
 print('Coleta efetuada com sucesso!')
