@@ -26,7 +26,12 @@ create_directory(DATA_DIR)
 """ ----------------LEITURA DF---------------- """
 
 csv_path = DATA_DIR / 'df_deputados.csv'
+csv_path_frente = DATA_DIR / 'dimensao_frentes.csv'
+
 df = pd.read_csv(csv_path)
+df_frente = pd.read_csv(csv_path_frente)
+
+
 
 espectro_politico = {
     'PL': 'Centro-direita',
@@ -177,3 +182,6 @@ def grafico_5(df, espectro=None, partido=None, politico=None):
     fig.update_traces(texttemplate='%{y:.2s}', textposition='top center')
     fig.update_layout(margin=dict(t=60, b=60))
     return fig
+
+
+# gráfico 6 - tabela de frentes

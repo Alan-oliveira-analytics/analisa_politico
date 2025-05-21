@@ -208,4 +208,39 @@ votacoes_detalhamento
 
 votacoes_detalhamento.to_csv('./data/votacoes_detalhamento.csv', index=False)
 
+
+
+
+""" ------------------ FRENTE PARLAMENTAR ---------------- """ 
+
+dimensao_frente = api.get_dados(endpoint='frentes')
+dimensao_frente = dimensao_frente['dados']
+dimensao_frente = pd.DataFrame(dimensao_frente)
+# dimensao_frente.to_csv('./data/dimensao_frente.csv', index=False)
+dimensao_frente.head()
+
+id_frente = list(dimensao_frente['id'])
+membros_frente = pd.DataFrame()
+
+for x in id_frente:
+    # puxar dados
+    membros = api.get_dados(endpoint=f'frentes/{x}/membros')
+    membros = membros['dados']
+    membros = pd.DataFrame(membros)
+
+    membros.drop(columns=['uri', 'uriPartido', 'urlFoto', 'dataInicio', 'dataFim'], inplace=True)
+
+    membros_frente = pd.concat([membros_frente, membros], ignore_index=True)
+
+membros_frente_completo = membros_frente.merge(dimensao_frente, on='id', how='right')
+membros_frente_completo
+membros_frente.head()
+
+membros_frente_completo.to_csv('./data/membros_frente.csv', index=False)
+
+
+
+
+""" ------------------ FIM DO SCRIPT ---------------- """
+# Mensagem de sucesso
 print('Coleta efetuada com sucesso!')
