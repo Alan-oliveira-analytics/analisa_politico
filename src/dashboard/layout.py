@@ -7,7 +7,7 @@ from dash import html, dcc
 import dash_bootstrap_components as dbc
 
 # Gráficos
-from .charts import grafico_1, grafico_2, grafico_3, grafico_4, grafico_5
+from .charts import grafico_1, grafico_2, grafico_3, grafico_4, grafico_5, grafico_6
 
 
 """ ----------------CONFIGURAÇÃO DE CAMINHO---------------- """
@@ -34,8 +34,10 @@ create_directory(DATA_DIR)
 """ ----------------LEITURA DF---------------- """
 
 csv_path = DATA_DIR / 'df_deputados.csv'
-df = pd.read_csv(csv_path)
+csv_path_frente = DATA_DIR / 'membros_frente.csv'
 
+df = pd.read_csv(csv_path)
+df_frente = pd.read_csv(csv_path_frente)
 # Adicionando a nova coluna com base no espectro político
 espectro_politico = {
     'PL': 'Centro-direita',
@@ -155,8 +157,8 @@ def cria_layout():
     
     html.Div([
         dcc.Graph(
-        id='grafico_politicos_por_espectro',
-        figure=grafico_2()
+        id='grafico_frentes_parlamentares',
+        figure=grafico_6(df_frente),
     )], style={'width': '50%', 'display': 'inline-block'}),
 
     html.Div([

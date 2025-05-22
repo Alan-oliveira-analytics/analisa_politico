@@ -216,7 +216,7 @@ votacoes_detalhamento.to_csv('./data/votacoes_detalhamento.csv', index=False)
 dimensao_frente = api.get_dados(endpoint='frentes')
 dimensao_frente = dimensao_frente['dados']
 dimensao_frente = pd.DataFrame(dimensao_frente)
-# dimensao_frente.to_csv('./data/dimensao_frente.csv', index=False)
+dimensao_frente.rename(columns={'titulo': 'titulo_frente'}, inplace=True)
 dimensao_frente.head()
 
 id_frente = list(dimensao_frente['id'])
@@ -227,17 +227,18 @@ for x in id_frente:
     membros = api.get_dados(endpoint=f'frentes/{x}/membros')
     membros = membros['dados']
     membros = pd.DataFrame(membros)
+    membros.rename(columns={'id': 'id_candidato'}, inplace=True)
+    membros['id'] = x
 
     membros.drop(columns=['uri', 'uriPartido', 'urlFoto', 'dataInicio', 'dataFim'], inplace=True)
 
     membros_frente = pd.concat([membros_frente, membros], ignore_index=True)
 
-membros_frente_completo = membros_frente.merge(dimensao_frente, on='id', how='right')
-membros_frente_completo
-membros_frente.head()
+membros_frente_completo = membros_frente.merge(dimensao_frente, on='id', how='inner')
+membros_frente_completo.head()
+
 
 membros_frente_completo.to_csv('./data/membros_frente.csv', index=False)
-
 
 
 

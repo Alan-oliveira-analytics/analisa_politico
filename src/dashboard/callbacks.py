@@ -1,6 +1,6 @@
 from dash import Dash, dcc, html, Input, Output, callback
 import pandas as pd
-from .charts import grafico_3, grafico_4, grafico_5
+from .charts import grafico_3, grafico_4, grafico_5, grafico_6
 from pathlib import Path
 
 """ ----------------CONFIGURAÇÃO DE CAMINHO---------------- """
@@ -27,7 +27,11 @@ create_directory(DATA_DIR)
 """ ----------------LEITURA DF---------------- """
 
 csv_path = DATA_DIR / 'df_deputados.csv'
+csv_path_frente = DATA_DIR / 'membros_frente.csv'
+
 df = pd.read_csv(csv_path)
+df_frente = pd.read_csv(csv_path_frente)
+
 
 # Adicionando a nova coluna com base no espectro político
 espectro_politico = {
@@ -100,3 +104,12 @@ def registro_callback(app):
     )
     def atualizar_grafico_sazonalidae(politico):
         return grafico_5(df, politico=politico)
+    
+    
+    @app.callback(
+        Output('grafico_frentes_parlamentares', 'figure', allow_duplicate=True),
+        Input('drop_politico', 'value'),
+        prevent_initial_call=True
+    )
+    def atualizar_grafico(politico):
+        return grafico_6(df_frente, politico=politico)
