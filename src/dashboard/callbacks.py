@@ -60,26 +60,31 @@ espectro_politico = {
 df['espectro_politico'] = df['siglaPartido'].map(espectro_politico)
 
 
+""" ----------------TODOS OS CALLBACKS---------------- """
 
 def registro_callback(app):
+
+    """Atualiza o gráfico de gastos por fornecedor baseado no partido selecionado"""
+
     @app.callback(
         Output('grafico_gastos_por_fornecedor', 'figure', allow_duplicate=True),
-        Input('drop_espectro', 'value'),
+        Input('drop_partido', 'value'),
         prevent_initial_call=True
     )
-    def atualizar_grafico(espectro):
-        return grafico_3(df, espectro=espectro)
+    def atualizar_grafico(partido):
+        return grafico_3(df, partido=partido)
 
+    """Atualiza o gráfico de gastos por fornecedor baseado no politico selecionado"""
 
     @app.callback(
         Output('grafico_gastos_por_fornecedor', 'figure'),
-        Input('drop_partido', 'value'),
-        
+        Input('drop_politico', 'value'),
     )
 
-    def atualizar_grafico_partido(partido):
-        return grafico_3(df, partido=partido)
+    def atualizar_grafico_politico(politico):
+        return grafico_3(df, politico=politico)
     
+    """Atualiza o gráfico de gastos por despesa baseado no partido selecionado"""
 
     @app.callback(
         Output('grafico_gastos_por_despesa', 'figure', allow_duplicate=True),
@@ -90,6 +95,8 @@ def registro_callback(app):
     def atualizar_grafico_despesa(partido):
         return grafico_4(df, partido=partido)
     
+    """Atualiza o gráfico de gastos por despesa baseado no politico selecionado"""
+
     @app.callback(
         Output('grafico_gastos_por_despesa', 'figure'),
         Input('drop_politico', 'value'),
@@ -98,14 +105,27 @@ def registro_callback(app):
         return grafico_4(df, politico=politico)
     
 
+    """Atualiza o gráfico de gastos por sazonalidade baseado no partido selecionado"""
+
     @app.callback(
-        Output('grafico_gastos_sazonalidade', 'figure'),
+        Output('grafico_gastos_sazonalidade', 'figure', allow_duplicate=True),
         Input('drop_politico', 'value'),
+        prevent_initial_call=True
     )
-    def atualizar_grafico_sazonalidae(politico):
+    def atualizar_grafico_sazonalidade(politico):
         return grafico_5(df, politico=politico)
     
-    
+
+    """Atualiza o gráfico de gastos por sazonalidade baseado no partido selecionado"""
+
+    @app.callback(
+        Output('grafico_gastos_sazonalidade', 'figure'),
+        Input('drop_partido', 'value'),
+    )
+    def atualizar_grafico_sazonalidade_partido(partido):
+        return grafico_5(df, partido=partido)
+
+    """Atualiza o gráfico de frentes parlamentares baseado no político selecionado"""
     @app.callback(
         Output('grafico_frentes_parlamentares', 'figure', allow_duplicate=True),
         Input('drop_politico', 'value'),
@@ -113,3 +133,49 @@ def registro_callback(app):
     )
     def atualizar_grafico(politico):
         return grafico_6(df_frente, politico=politico)
+
+    """Atualiza o gráfico de frentes parlamentares baseado no partido selecionado"""
+    
+    @app.callback(
+        Output('grafico_frentes_parlamentares', 'figure'),
+        Input('drop_partido', 'value')
+    )
+    def atualizar_grafico(partido):
+        return grafico_6(df_frente, partido=partido)
+
+
+    """Atualiza as opções do dropdown de políticos baseado no partido selecionado"""
+
+    @app.callback(
+        Output('drop_politico', 'options'),
+        Input('drop_partido', 'value'),
+        prevent_initial_call=True
+    )
+    def atualizar_opcoes_politico(partido):
+        if partido == 'Todos' or partido is None:
+            opcoes_politico = [{'label': i, 'value': i} for i in df['nome'].unique()]
+
+        else:
+            opcoes_politico = [{'label': i, 'value': i} for i in df[df['siglaPartido'] == partido]['nome'].unique()]
+        
+        return opcoes_politico
+    
+
+    """Atualiza as opções do dropdown de partidos baseado no político selecionado"""
+
+    @app.callback(
+        Output('drop_partido', 'options'),
+        Input('drop_politico', 'value'),
+        prevent_initial_call=True
+    )
+
+
+    def atualizar_opcoes_partido(politico):
+        if politico == 'Todos' or politico is None:
+            opacoes_partido = [{'label': i, 'value': i} for i in df['siglaPartido'].unique()]
+
+        else:
+            opacoes_partido = [{'label': i, 'value': i} for i in df[df['nome'] == politico]['siglaPartido'].unique()]
+        
+        return opacoes_partido
+    

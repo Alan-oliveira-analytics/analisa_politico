@@ -115,29 +115,27 @@ def cria_layout():
             vertical=True,
             pills=True,
         ),
-        html.Hr(),
 
+        html.Hr(),
+ 
+    # ---------------------------------FILTROS--------------------------------------       
+        html.Div([
+            'Escolha o partido:',
+            dcc.Dropdown(opcoes_partido, value='Todos', id='drop_partido'),
+        ]),
+
+        html.Hr(),
         html.Div([
             'Escolha o Político:',
             dcc.Dropdown(opcoes_politico, value='Todos', id='drop_politico'),
-        ]),
-
-        html.Hr(),
-        html.Div([
-            'Filtre por espectro político:',
-            dcc.Dropdown(opcoes_espectro, 'Todos', id='drop_espectro'),
-        ]),
-
-        html.Hr(),
-        html.Div([
-            'Filtre por partido:',
-            dcc.Dropdown(opcoes_partido, value='Todos', id='drop_partido'),
         ]),
 
     ],
     style=sidebar_style
     ),
    
+
+    # ---------------------------------GRÁFICOS--------------------------------------
     
     # Conteúdo principal
     html.Div([  # div principal que vai conter o conteúdo
