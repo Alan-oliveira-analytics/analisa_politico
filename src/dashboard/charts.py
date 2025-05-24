@@ -121,6 +121,7 @@ def grafico_3(df, espectro=None, partido=None, politico=None):
         text_auto=True,
         orientation='h',
     )
+    fig.update_traces(texttemplate='%{x:,.2f}', text=[f'R${v:,.2f}'.replace(',', 'X').replace('.', ',').replace('X', '.') for v in df_graph_3['valorLiquido']])
     #invertendo para mostrar do maior para o menor
     fig = fig.update_yaxes(categoryorder='total ascending')
 
