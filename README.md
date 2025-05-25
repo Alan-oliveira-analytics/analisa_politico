@@ -1,14 +1,35 @@
-# Acompanhamento Político 
+# Analisador de Políticos
 
-O objetivo aqui é desenvolver um dashboard online e interativo que ficará disponível para que as pessoas possam fazer sua própria análise sobre os políticos, podendo ver um detalhamento geral de cada um deles como por exemplo:
+Ferramenta interativa para análise dos gastos e atividades dos parlamentares brasileiros. Utiliza dados públicos da Câmara dos Deputados para gerar visualizações dinâmicas sobre despesas, participação em frentes parlamentares e padrões de comportamento político.
 
-- Eventos no qual participaram
-- Gastos gerais
-- Votações
+---
 
-Para esse projeto buscarei eliminar o máximo possível de viés político da minha parte, diante disso:
-- Não irei incluir nenhum tipo de opinião
-- Apenas os dados irão "falar" nesse projeto
-- Utilizarei a mesma análise para qualquer um dos lados, sem nenhum tipo de filtragem para X ou Y
+## Objetivos
 
-Sinta-se a vontade para utilizar esse projeto e caso tenha algo para agregar será muito bem-vindo(a)!
+- Facilitar o acompanhamento dos gastos públicos de parlamentares.
+- Identificar padrões ou comportamentos atípicos entre deputados.
+- Tornar os dados políticos mais compreensíveis e acessíveis à população.
+
+---
+
+## Tecnologias Utilizadas
+
+- **Linguagem:** Python 3.12
+- **Dashboard:** Dash + Plotly
+- **Gerenciador de dependências:** Poetry
+- **Coleta de dados:** requests, pandas
+- **Visualização:** plotly express
+- **Automação:** GitHub Actions (`.github/workflows/coleta.diaria.yml`)
+
+---
+
+## Estrutura do Projeto
+
+```bash
+📁 src/
+ ├── api/                  # Módulo de acesso à API da Câmara
+ ├── pipeline/             # Coleta e transformação de dados
+ ├── dashboard/            # Layouts, callbacks e gráficos do Dash
+📁 data/                   # Dados CSV atualizados
+📁 notebooks/              # Análises exploratórias e tratamento
+📁 tests/                  # Testes unitários

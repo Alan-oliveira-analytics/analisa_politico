@@ -20,7 +20,7 @@ def create_directory(path: Path):
         print(f'[OK] Diretório {path} pronto.')
 
 
-DATA_DIR = Path(__file__).resolve().parents[2] / "data"
+DATA_DIR = Path(__file__).resolve().parents[3] / "data"
 create_directory(DATA_DIR)
 
 
@@ -66,42 +66,8 @@ df.head()
 df_unique_id = df.sort_values(['id']).drop_duplicates('id', keep='first')
 
 
-
-# gráfico 1 - gastos por espectro politico
-def grafico_1():
-
-    df_graph_1 = df.groupby(['espectro_politico'])['valorLiquido'].sum().sort_values(ascending=False)
-    df_graph_1 = pd.DataFrame(df_graph_1).reset_index()
-    
-    fig = px.bar(
-        df_graph_1,
-        x="espectro_politico",
-        y="valorLiquido",
-        title="Gastos por Espectro Político",
-        labels={"valorLiquido": "Total Gasto", "espectro_politico": "Espectro Político"},
-        text_auto=True
-    )
-    return fig
-
-
-# gráfico 2 - candidatos por espectro
-def grafico_2():
-    
-    df_graph_2 = df_unique_id['espectro_politico'].value_counts().reset_index()
-    
-    fig = px.bar(
-        df_graph_2,
-        x='espectro_politico',
-        y='count',
-        title="Distribuição de Políticos por Espectro",
-        text_auto=True
-    )
-    
-    return fig
-
-
 # top 10 gastos por fornecedor
-def grafico_3(df, espectro=None, partido=None, politico=None):
+def grafico_1(df, espectro=None, partido=None, politico=None):
     if politico:
         df = df[df['nome'] == politico]
     
@@ -111,17 +77,24 @@ def grafico_3(df, espectro=None, partido=None, politico=None):
     if partido:
         df = df[df['siglaPartido'] == partido]
 
+    # Ignora valores menores ou iguais a 0
+    df = df[df['valorLiquido'] > 0]
+    
     df_graph_3 = df.groupby(['nomeFornecedor'])['valorLiquido'].sum().nlargest(10).reset_index()
+
+    # Adiciona coluna formatada para exibir valores em reais
+    df_graph_3['valorLiquido_fmt'] = df_graph_3['valorLiquido'].apply(lambda v: f'R${v:,.2f}'.replace(',', 'X').replace('.', ',').replace('X', '.'))
 
     fig = px.bar(
         df_graph_3,
         x='valorLiquido',
         y='nomeFornecedor',
         title='TOP 10 - Gastos por Fornecedor',
-        text_auto=True,
+        text='valorLiquido_fmt',
         orientation='h',
+        labels={'valorLiquido': '', 'nomeFornecedor': ''}
     )
-    fig.update_traces(texttemplate='%{x:,.2f}', text=[f'R${v:,.2f}'.replace(',', 'X').replace('.', ',').replace('X', '.') for v in df_graph_3['valorLiquido']])
+    fig.update_traces(texttemplate='%{text}')
     #invertendo para mostrar do maior para o menor
     fig = fig.update_yaxes(categoryorder='total ascending')
 
@@ -130,7 +103,7 @@ def grafico_3(df, espectro=None, partido=None, politico=None):
 
 
 # top 10 gastos por tipo de despesa
-def grafico_4(df, espectro=None, partido=None, politico=None):
+def grafico_2(df, espectro=None, partido=None, politico=None):
     if politico:
         df = df[df['nome'] == politico]
 
@@ -140,15 +113,20 @@ def grafico_4(df, espectro=None, partido=None, politico=None):
     if partido:
         df = df[df['siglaPartido'] == partido]
 
+    # Ignora valores menores ou iguais a 0
+    df = df[df['valorLiquido'] > 0]
     df_graph_3 = df.groupby(['tipoDespesa'])['valorLiquido'].sum().nlargest(10).reset_index()
+    df_graph_3['valorLiquido_fmt'] = df_graph_3['valorLiquido'].apply(lambda v: f'R${v:,.2f}'.replace(',', 'X').replace('.', ',').replace('X', '.'))
+
 
     fig = px.bar(
         df_graph_3,
         x='valorLiquido',
         y='tipoDespesa',
         title='TOP 10 - Gastos por Tipo de Despesa',
-        text_auto=True,
+        text='valorLiquido_fmt',
         orientation='h',
+        labels={'valorLiquido': '', 'tipoDespesa': ''}
     )
     #invertendo para mostrar do maior para o menor
     fig = fig.update_yaxes(categoryorder='total ascending')
@@ -157,14 +135,16 @@ def grafico_4(df, espectro=None, partido=None, politico=None):
 
 
 # gráfico 5 - Sazonalidadee
-def grafico_5(df, espectro=None, partido=None, politico=None):
+def grafico_3(df, espectro=None, partido=None, politico=None):
     if politico:
         df = df[df['nome'] == politico]
     if espectro:
         df = df[df['espectro_politico'] == espectro]
     if partido:
         df = df[df['siglaPartido'] == partido]
-
+    
+    # Ignora valores menores ou iguais a 0
+    df = df[df['valorLiquido'] > 0]
     df['ano'] = pd.to_datetime(df['dataDocumento']).dt.year
     df['mes'] = pd.to_datetime(df['dataDocumento']).dt.month
     df["mes"] = df["mes"].astype(str)
@@ -185,35 +165,3 @@ def grafico_5(df, espectro=None, partido=None, politico=None):
     fig.update_layout(margin=dict(t=60, b=60))
     return fig
 
-
-# gráfico 6 - tabela de frentes
-def grafico_6(df, politico=None, partido=None):
-
-    # condicionais para a filtragem
-    if politico:
-        df = df[df['nome'] == politico]
-    if partido:
-        df = df[df['siglaPartido'] == partido]
-
-    # gráfico vertical
-    fig = go.Figure(data=[go.Table(
-    header=dict(
-        values=["<b>Nome</b>", "<b>Partido</b>", "<b>Frente Parlamentar</b>", "<b>Cargo</b>"],
-        fill_color='lightblue',
-        align='left'
-    ),
-    cells=dict(
-        values=[
-            df.nome,
-            df.siglaPartido,
-            df.titulo_frente,
-            df.titulo
-        ],
-        fill_color='lavender',
-        align='left'
-    )
-    )])
-
-    fig.update_layout(title="Frentes Parlamentares que o Candidato Participa")
-
-    return fig

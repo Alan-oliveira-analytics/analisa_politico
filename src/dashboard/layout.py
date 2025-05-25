@@ -7,7 +7,8 @@ from dash import html, dcc
 import dash_bootstrap_components as dbc
 
 # Gráficos
-from .charts import grafico_1, grafico_2, grafico_3, grafico_4, grafico_5, grafico_6
+from .componentes.gastos_charts import grafico_1, grafico_2, grafico_3
+from .componentes.frente_charts import grafico_4
 
 
 """ ----------------CONFIGURAÇÃO DE CAMINHO---------------- """
@@ -38,42 +39,10 @@ csv_path_frente = DATA_DIR / 'membros_frente.csv'
 
 df = pd.read_csv(csv_path)
 df_frente = pd.read_csv(csv_path_frente)
-# Adicionando a nova coluna com base no espectro político
-espectro_politico = {
-    'PL': 'Centro-direita',
-    'PT': 'Esquerda',
-    'UNIÃO': 'Centro-direita',
-    'PP': 'Centro-direita',
-    'REPUBLICANOS': 'Direita',
-    'PSD': 'Centro',
-    'MDB': 'Centro',
-    'PDT': 'Centro-esquerda',
-    'PODE': 'Centro-direita',
-    'PSB': 'Centro-esquerda',
-    'PSOL': 'Esquerda',
-    'PSDB': 'Centro',
-    'PCdoB': 'Esquerda',
-    'AVANTE': 'Centro',
-    'PV': 'Centro-esquerda',
-    'NOVO': 'Direita',
-    'PRD': 'Direita',
-    'CIDADANIA': 'Centro-esquerda',
-    'SOLIDARIEDADE': 'Centro-esquerda',
-    'REDE': 'Centro-esquerda'
-}
 
-df['espectro_politico'] = df['siglaPartido'].map(espectro_politico)
-
-
-df.columns
-
-opcoes_espectro = ['Direita', 'Esquerda', 'Centro', 'Centro-direita', 'Centro-esquerda']
-
-opcoes_partido = ['MDB', 'REPUBLICANOS', 'PL', 'PSDB', 'NOVO', 'PP', 'PDT', 'PT',
-       'CIDADANIA', 'UNIÃO', 'PCdoB', 'PV', 'AVANTE', 'PSD',
-       'SOLIDARIEDADE', 'PSB', 'PODE', 'PSOL', 'PRD', 'REDE']
-
+opcoes_partido =df['siglaPartido'].unique().tolist()
 opcoes_politico = df['nome'].unique().tolist()
+
 
 # Estilo do layout
 sidebar_style = {
@@ -93,7 +62,7 @@ content_style = {
 }
 
 
-def cria_layout():
+def layout_pagina_1():
 
 
     return  html.Div([
@@ -149,27 +118,27 @@ def cria_layout():
     html.Div([
         dcc.Graph(
         id='grafico_gastos_sazonalidade',
-        figure=grafico_5(df),
+        figure=grafico_1(df),
     )], style={'width': '50%', 'display': 'inline-block'}),
 
     
     html.Div([
         dcc.Graph(
         id='grafico_frentes_parlamentares',
-        figure=grafico_6(df_frente),
+        figure=grafico_4(df_frente),
     )], style={'width': '50%', 'display': 'inline-block'}),
 
     html.Div([
         dcc.Graph(
         id='grafico_gastos_por_fornecedor',
-        figure=grafico_3(df)
+        figure=grafico_2(df)
     )], style={'width': '50%', 'display': 'inline-block'}),
 
   
     html.Div([
         dcc.Graph(
         id='grafico_gastos_por_despesa',
-        figure=grafico_4(df)
+        figure=grafico_3(df)
     )], style={'width': '50%', 'display': 'inline-block'}),
 
 
