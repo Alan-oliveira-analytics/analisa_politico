@@ -6,9 +6,7 @@ from pathlib import Path
 from dash import html, dcc
 import dash_bootstrap_components as dbc
 
-# Gráficos
-from .componentes.gastos_charts import grafico_1, grafico_2, grafico_3
-from .componentes.frente_charts import grafico_4
+
 
 
 """ ----------------CONFIGURAÇÃO DE CAMINHO---------------- """
@@ -62,7 +60,7 @@ content_style = {
 }
 
 
-def layout_pagina_1():
+def layout_pagina_2():
 
 
     return  html.Div([
@@ -86,8 +84,8 @@ def layout_pagina_1():
         ),
 
         html.Hr(),
- 
-    # ---------------------------------FILTROS--------------------------------------       
+
+        # ---------------------------------FILTROS--------------------------------------       
         html.Div([
             'Escolha o partido:',
             dcc.Dropdown(opcoes_partido, value='Todos', id='drop_partido'),
@@ -101,40 +99,12 @@ def layout_pagina_1():
 
     ],
     style=sidebar_style
-    ),
-   
-
-    # ---------------------------------GRÁFICOS--------------------------------------
-    
-    # Conteúdo principal
-    html.Div([  # div principal que vai conter o conteúdo
-    
-    html.Div([
-        dcc.Graph(
-        id='grafico_gastos_sazonalidade',
-        figure=grafico_1(df),
-    )], style={'width': '50%', 'display': 'inline-block'}),
-
-    
-    html.Div([
-        dcc.Graph(
-        id='grafico_frentes_parlamentares',
-        figure=grafico_4(df_frente),
-    )], style={'width': '50%', 'display': 'inline-block'}),
-
-    html.Div([
-        dcc.Graph(
-        id='grafico_gastos_por_fornecedor',
-        figure=grafico_2(df)
-    )], style={'width': '50%', 'display': 'inline-block'}),
-
-  
-    html.Div([
-        dcc.Graph(
-        id='grafico_gastos_por_despesa',
-        figure=grafico_3(df)
-    )], style={'width': '50%', 'display': 'inline-block'}),
-
+        ),
+        # Conteúdo principal    
+        html.Div([
+            html.H1("Frentes Parlamentares", className='text-center'),
+            html.Hr(),
+            dcc.Graph(id='grafico_frentes', figure={}, style={'height': '100vh'}),
 
 
         ])], style=content_style

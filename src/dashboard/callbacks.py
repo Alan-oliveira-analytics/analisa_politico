@@ -1,9 +1,15 @@
 from dash import Dash, dcc, html, Input, Output, callback
 import pandas as pd
+from pathlib import Path
+
+# Importa os componentes do Dash
 from .componentes.gastos_charts import grafico_1, grafico_2, grafico_3
 from.componentes.frente_charts import grafico_4
-from pathlib import Path
+
+# Importa o layout das páginas
 from .layout import layout_pagina_1
+from .layout_pag2 import layout_pagina_2
+
 
 """ ----------------CONFIGURAÇÃO DE CAMINHO---------------- """
 def create_directory(path: Path):
@@ -47,7 +53,7 @@ def registro_callback(app):
         if pathname == '/pagina-1' or pathname == '/':
             return layout_pagina_1()
         elif pathname == '/pagina-2':
-            return html.H1('Conteúdo da Página 2')
+            return layout_pagina_2()
         else:
             return html.Div([
                 html.H1("404 - Página não encontrada", className='text-danger'),
