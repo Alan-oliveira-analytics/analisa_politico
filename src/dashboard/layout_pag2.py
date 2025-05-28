@@ -6,6 +6,8 @@ from pathlib import Path
 from dash import html, dcc
 import dash_bootstrap_components as dbc
 
+# Gráficos
+from .componentes.outliers_charts import boxplot_gastos, boxplot_gastos_parlamentar, boxplot_gastos_partido, top_parlamentares_gastos
 
 
 
@@ -98,14 +100,45 @@ def layout_pagina_2():
         ]),
 
     ],
-    style=sidebar_style
-        ),
+        style=sidebar_style
+            ),
+
+    #----------------GRÁFICOS----------------
+
         # Conteúdo principal    
         html.Div([
-            html.H1("Frentes Parlamentares", className='text-center'),
-            html.Hr(),
-            dcc.Graph(id='grafico_frentes', figure={}, style={'height': '100vh'}),
 
 
-        ])], style=content_style
-)
+        html.Div([
+            dcc.Graph(
+            id='boxplot_gastos',
+            figure=boxplot_gastos(df),
+            )
+        ], style={'width': '50%', 'display': 'inline-block'}),
+
+
+        html.Div([
+            dcc.Graph(
+            id='boxplot_gastos_parlamentar',
+            figure=boxplot_gastos_parlamentar(df),
+            )
+        ], style={'width': '50%', 'display': 'inline-block'}),
+        
+
+        html.Div([
+            dcc.Graph(
+            id='boxplot_gastos_partido',
+            figure=boxplot_gastos_partido(df),
+            )
+        ], style={'width': '50%', 'display': 'inline-block'}),
+
+
+        html.Div([
+            dcc.Graph(
+            id='top_parlamentares_gastos',
+            figure=top_parlamentares_gastos(df),
+            )
+        ], style={'width': '50%', 'display': 'inline-block'}),
+
+        ], style=content_style)
+])

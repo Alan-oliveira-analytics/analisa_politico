@@ -2,6 +2,7 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 from pathlib import Path
+from dash import dash_table
 
 """ ----------------CONFIGURAÇÃO DE CAMINHO---------------- """
 def create_directory(path: Path):
@@ -34,32 +35,7 @@ df_frente = pd.read_csv(csv_path_frente)
 
 df_frente.head()
 
-espectro_politico = {
-    'PL': 'Centro-direita',
-    'PT': 'Esquerda',
-    'UNIÃO': 'Centro-direita',
-    'PP': 'Centro-direita',
-    'REPUBLICANOS': 'Direita',
-    'PSD': 'Centro',
-    'MDB': 'Centro',
-    'PDT': 'Centro-esquerda',
-    'PODE': 'Centro-direita',
-    'PSB': 'Centro-esquerda',
-    'PSOL': 'Esquerda',
-    'PSDB': 'Centro',
-    'PCdoB': 'Esquerda',
-    'AVANTE': 'Centro',
-    'PV': 'Centro-esquerda',
-    'NOVO': 'Direita',
-    'PRD': 'Direita',
-    'CIDADANIA': 'Centro-esquerda',
-    'SOLIDARIEDADE': 'Centro-esquerda',
-    'REDE': 'Centro-esquerda'
-}
 
-# Adicionando a nova coluna com base no espectro político
-df['espectro_politico'] = df['siglaPartido'].map(espectro_politico)
-df.columns
 
 df.head()
 # criando uma variável que comporta id's únicos
@@ -79,25 +55,22 @@ def grafico_1(df, espectro=None, partido=None, politico=None):
 
     # Ignora valores menores ou iguais a 0
     df = df[df['valorLiquido'] > 0]
-    
-    df_graph_3 = df.groupby(['nomeFornecedor'])['valorLiquido'].sum().nlargest(10).reset_index()
 
-    # Adiciona coluna formatada para exibir valores em reais
-    df_graph_3['valorLiquido_fmt'] = df_graph_3['valorLiquido'].apply(lambda v: f'R${v:,.2f}'.replace(',', 'X').replace('.', ',').replace('X', '.'))
-
-    fig = px.bar(
-        df_graph_3,
-        x='valorLiquido',
-        y='nomeFornecedor',
-        title='TOP 10 - Gastos por Fornecedor',
-        text='valorLiquido_fmt',
-        orientation='h',
-        labels={'valorLiquido': '', 'nomeFornecedor': ''}
+    # Cria links clicáveis para a coluna 'Nota fiscal'
+    df['link_nota'] = df['urlDocumento'].apply(
+        lambda url: f'[Ver Nota]({url})' if pd.notnull(url) else ''
     )
-    fig.update_traces(texttemplate='%{text}')
-    #invertendo para mostrar do maior para o menor
-    fig = fig.update_yaxes(categoryorder='total ascending')
 
+    fig = dash_table.DataTable(
+        columns=[
+            {'name': 'Fornecedor', 'id': 'nomeFornecedor'},
+            {'name': 'Valor Líquido', 'id': 'valorLiquido', 'type': 'numeric', 'format': {'specifier': ',.2f'}},
+            {'name': 'Nota Fiscal', 'id': 'link_nota', 'presentation': 'markdown'},
+            {'name': 'CNPJ', 'id': 'cnpjCpfFornecedor'},
+        ],
+        data=df.to_dict('records'),
+        style_cell={'textAlign': 'left'},
+    )
     return fig
 
 

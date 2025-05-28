@@ -109,10 +109,11 @@ def layout_pagina_1():
     # Conteúdo principal
     html.Div([  # div principal que vai conter o conteúdo
     
+    
     html.Div([
         dcc.Graph(
         id='grafico_gastos_sazonalidade',
-        figure=grafico_1(df),
+        figure=grafico_3(df),
     )], style={'width': '50%', 'display': 'inline-block'}),
 
     
@@ -122,18 +123,19 @@ def layout_pagina_1():
         figure=grafico_4(df_frente),
     )], style={'width': '50%', 'display': 'inline-block'}),
 
+
     html.Div([
         dcc.Graph(
         id='grafico_gastos_por_fornecedor',
-        figure=grafico_2(df)
-    )], style={'width': '50%', 'display': 'inline-block'}),
+        figure=grafico_1(df)
+    )], style={'width': '100%', 'display': 'inline-block'}),
 
   
     html.Div([
         dcc.Graph(
         id='grafico_gastos_por_despesa',
-        figure=grafico_3(df)
-    )], style={'width': '50%', 'display': 'inline-block'}),
+        figure=grafico_2(df)
+    )], style={'width': '100%', 'display': 'inline-block'}),
 
 
 
