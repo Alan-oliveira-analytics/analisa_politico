@@ -7,8 +7,8 @@ from dash import html, dcc
 import dash_bootstrap_components as dbc
 
 # Gráficos
-from .componentes.gastos_charts import grafico_1, grafico_2, grafico_3
-from .componentes.frente_charts import grafico_4
+from .componentes.gastos_charts import grafico_gastos_fornecedor, grafico_gastos_tipo_despesa, grafico_sazonalidade
+from .componentes.frente_charts import grafico_tabela_frentes
 
 
 """ ----------------CONFIGURAÇÃO DE CAMINHO---------------- """
@@ -113,28 +113,36 @@ def layout_pagina_1():
     html.Div([
         dcc.Graph(
         id='grafico_gastos_sazonalidade',
-        figure=grafico_3(df),
+        figure=grafico_sazonalidade(df),
     )], style={'width': '50%', 'display': 'inline-block'}),
 
     
     html.Div([
         dcc.Graph(
         id='grafico_frentes_parlamentares',
-        figure=grafico_4(df_frente),
-    )], style={'width': '50%', 'display': 'inline-block'}),
+        figure=grafico_tabela_frentes(df_frente),
+    )], style={
+        'width': '50%', 
+        'display': 'inline-block',
+        'backgroundColor': '#f8f9fa',      
+        'border': '1px solid #dee2e6',   
+        'borderRadius': '8px',         
+        'padding': '20px',                
+        'marginBottom': '20px',           
+        'boxShadow': '0 2px 4px rgba(0,0,0,0.05)' 
+        }),
 
 
-    html.Div([
-        dcc.Graph(
+    html.Div(
         id='grafico_gastos_por_fornecedor',
-        figure=grafico_1(df)
-    )], style={'width': '100%', 'display': 'inline-block'}),
+        children=grafico_gastos_fornecedor(df),   
+        style={'width': '100%', 'display': 'inline-block'}),
 
   
     html.Div([
         dcc.Graph(
         id='grafico_gastos_por_despesa',
-        figure=grafico_2(df)
+        figure=grafico_gastos_tipo_despesa(df)
     )], style={'width': '100%', 'display': 'inline-block'}),
 
 

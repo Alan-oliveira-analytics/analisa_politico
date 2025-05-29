@@ -3,8 +3,8 @@ import pandas as pd
 from pathlib import Path
 
 # Importa os componentes do Dash
-from .componentes.gastos_charts import grafico_1, grafico_2, grafico_3
-from.componentes.frente_charts import grafico_4
+from .componentes.gastos_charts import grafico_sazonalidade, grafico_gastos_fornecedor, grafico_gastos_tipo_despesa
+from.componentes.frente_charts import grafico_tabela_frentes
 
 # Importa o layout das páginas
 from .layout import layout_pagina_1
@@ -67,12 +67,12 @@ def registro_callback(app):
     """Atualiza o gráfico de gastos por fornecedor baseado no partido selecionado"""
 
     @app.callback(
-        Output('grafico_gastos_por_fornecedor', 'figure', allow_duplicate=True),
+        Output('grafico_gastos_por_fornecedor', 'children', allow_duplicate=True),
         Input('drop_partido', 'value'),
         prevent_initial_call=True
     )
     def atualizar_grafico(partido):
-        return grafico_1(df, partido=partido)
+        return grafico_gastos_fornecedor(df, partido=partido)
 
 
 
@@ -80,12 +80,12 @@ def registro_callback(app):
     """Atualiza o gráfico de gastos por fornecedor baseado no politico selecionado"""
 
     @app.callback(
-        Output('grafico_gastos_por_fornecedor', 'figure'),
+        Output('grafico_gastos_por_fornecedor', 'children'),
         Input('drop_politico', 'value'),
     )
 
     def atualizar_grafico_politico(politico):
-        return grafico_1(df, politico=politico)
+        return grafico_gastos_fornecedor(df, politico=politico)
     
     """Atualiza o gráfico de gastos por despesa baseado no partido selecionado"""
 
@@ -96,7 +96,7 @@ def registro_callback(app):
     )
 
     def atualizar_grafico_despesa(partido):
-        return grafico_2(df, partido=partido)
+        return grafico_gastos_tipo_despesa(df, partido=partido)
     
     """Atualiza o gráfico de gastos por despesa baseado no politico selecionado"""
 
@@ -105,7 +105,7 @@ def registro_callback(app):
         Input('drop_politico', 'value'),
     )
     def atualizar_grafico_despesa_politico(politico):
-        return grafico_2(df, politico=politico)
+        return grafico_gastos_tipo_despesa(df, politico=politico)
     
 
     """Atualiza o gráfico de gastos por sazonalidade baseado no partido selecionado"""
@@ -116,7 +116,7 @@ def registro_callback(app):
         prevent_initial_call=True
     )
     def atualizar_grafico_sazonalidade(politico):
-        return grafico_3(df, politico=politico)
+        return grafico_sazonalidade(df, politico=politico)
     
 
     """Atualiza o gráfico de gastos por sazonalidade baseado no partido selecionado"""
@@ -126,16 +126,18 @@ def registro_callback(app):
         Input('drop_partido', 'value'),
     )
     def atualizar_grafico_sazonalidade_partido(partido):
-        return grafico_3(df, partido=partido)
+        return grafico_sazonalidade(df, partido=partido)
+
 
     """Atualiza o gráfico de frentes parlamentares baseado no político selecionado"""
+
     @app.callback(
         Output('grafico_frentes_parlamentares', 'figure', allow_duplicate=True),
         Input('drop_politico', 'value'),
         prevent_initial_call=True
     )
     def atualizar_grafico(politico):
-        return grafico_4(df_frente, politico=politico)
+        return grafico_tabela_frentes(df_frente, politico=politico)
 
     """Atualiza o gráfico de frentes parlamentares baseado no partido selecionado"""
     
@@ -144,7 +146,7 @@ def registro_callback(app):
         Input('drop_partido', 'value')
     )
     def atualizar_grafico(partido):
-        return grafico_4(df_frente, partido=partido)
+        return grafico_tabela_frentes(df_frente, partido=partido)
 
 
     """Atualiza as opções do dropdown de políticos baseado no partido selecionado"""

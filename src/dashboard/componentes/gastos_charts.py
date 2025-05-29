@@ -43,12 +43,10 @@ df_unique_id = df.sort_values(['id']).drop_duplicates('id', keep='first')
 
 
 # top 10 gastos por fornecedor
-def grafico_1(df, espectro=None, partido=None, politico=None):
+def grafico_gastos_fornecedor(df, partido=None, politico=None):
+
     if politico:
         df = df[df['nome'] == politico]
-    
-    if espectro:
-        df = df[df['espectro_politico'] == espectro]
 
     if partido:
         df = df[df['siglaPartido'] == partido]
@@ -61,22 +59,60 @@ def grafico_1(df, espectro=None, partido=None, politico=None):
         lambda url: f'[Ver Nota]({url})' if pd.notnull(url) else ''
     )
 
+    df = df.sort_values('valorLiquido', ascending=False)
+
     fig = dash_table.DataTable(
         columns=[
+            {'name': 'Parlamentar', 'id': 'nome'},
             {'name': 'Fornecedor', 'id': 'nomeFornecedor'},
             {'name': 'Valor Líquido', 'id': 'valorLiquido', 'type': 'numeric', 'format': {'specifier': ',.2f'}},
             {'name': 'Nota Fiscal', 'id': 'link_nota', 'presentation': 'markdown'},
             {'name': 'CNPJ', 'id': 'cnpjCpfFornecedor'},
+          
         ],
         data=df.to_dict('records'),
-        style_cell={'textAlign': 'left'},
+            style_table={
+                'maxHeight': '400px',   # limita altura e ativa scroll vertical
+                'overflowY': 'auto',
+                'overflowX': 'auto',    # scroll horizontal se precisar
+                'border': '1px solid lightgray',
+    },
+            style_cell={
+                'textAlign': 'left',
+                'fontSize': '13px',
+                'padding': '6px',
+                'whiteSpace': 'normal',
+    },
+            style_cell_conditional=[
+            {
+                'if': {'column_id': 'nomeFornecedor', 'column_id': 'nome'},
+                'minWidth': '100px',
+                'maxWidth': '160px',
+                'width': '160px',
+        },
+        {
+                'if': {'column_id': 'valorLiquido'},
+                'textAlign': 'right'
+        },
+        {
+                'if': {'column_id': 'link_nota'},
+                'textAlign': 'center'
+        }
+    ],
+            style_header={
+                'backgroundColor': '#0074D9',
+                'color': 'white',
+                'fontWeight': 'bold',
+                'textAlign': 'center'
+    },
+          
     )
     return fig
 
 
 
 # top 10 gastos por tipo de despesa
-def grafico_2(df, espectro=None, partido=None, politico=None):
+def grafico_gastos_tipo_despesa(df, espectro=None, partido=None, politico=None):
     if politico:
         df = df[df['nome'] == politico]
 
@@ -108,7 +144,7 @@ def grafico_2(df, espectro=None, partido=None, politico=None):
 
 
 # gráfico 5 - Sazonalidadee
-def grafico_3(df, espectro=None, partido=None, politico=None):
+def grafico_sazonalidade(df, espectro=None, partido=None, politico=None):
     if politico:
         df = df[df['nome'] == politico]
     if espectro:

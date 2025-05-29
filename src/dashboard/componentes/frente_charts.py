@@ -34,7 +34,7 @@ df_frente = pd.read_csv(csv_path_frente)
 
 
 # gráfico 4 - tabela de frentes
-def grafico_4(df, politico=None, partido=None):
+def grafico_tabela_frentes(df, politico=None, partido=None):
 
     # condicionais para a filtragem
     if politico:
