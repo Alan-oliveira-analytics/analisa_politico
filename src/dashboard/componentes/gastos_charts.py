@@ -174,3 +174,78 @@ def grafico_sazonalidade(df, espectro=None, partido=None, politico=None):
     fig.update_layout(margin=dict(t=60, b=60))
     return fig
 
+
+
+def indicador_gasto_total(df, partido=None, politico=None):
+    if politico:
+        df = df[df['nome'] == politico]
+
+    if partido:
+        df = df[df['siglaPartido'] == partido]
+
+    # Ignora valores menores ou iguais a 0
+    df = df[df['valorLiquido'] > 0]
+    
+    total_gasto = df['valorLiquido'].sum()
+
+    indicador = go.Figure(go.Indicator(
+    mode = "number",
+    value = total_gasto,
+    title = {"text": "Gasto Total"}
+    ))
+
+    indicador.update_traces(number={'valueformat': ',.2f', 'prefix': 'R$'})
+    
+    return indicador
+
+
+def indicador_numero_gastos(df, partido=None, politico=None):
+    if politico:
+        df = df[df['nome'] == politico]
+
+    if partido:
+        df = df[df['siglaPartido'] == partido]
+
+    # Ignora valores menores ou iguais a 0
+    df = df[df['valorLiquido'] > 0]
+    
+    total_gastos = df.shape[0]
+
+    indicador = go.Figure(go.Indicator(
+    mode = "number",
+    value = total_gastos,
+    title = {"text": "Número de Gastos"}
+    ))
+
+    indicador.update_traces(number={'valueformat': '.d', 'prefix': ''})
+
+    return indicador
+
+
+def ticket_medio_gastos(df, partido=None, politico=None):
+    if politico:
+        df = df[df['nome'] == politico]
+
+    if partido:
+        df = df[df['siglaPartido'] == partido]
+
+    # Ignora valores menores ou iguais a 0
+    df = df[df['valorLiquido'] > 0]
+    
+    total_gastos = df.shape[0]
+    total_valor = df['valorLiquido'].sum()
+
+    if total_gastos > 0:
+        ticket_medio = total_valor / total_gastos
+    else:
+        ticket_medio = 0
+
+    indicador = go.Figure(go.Indicator(
+    mode = "number",
+    value = ticket_medio,
+    title = {"text": "Ticket Médio"}
+    ))
+
+    indicador.update_traces(number={'valueformat': ',.2f', 'prefix': 'R$'})
+
+    return indicador

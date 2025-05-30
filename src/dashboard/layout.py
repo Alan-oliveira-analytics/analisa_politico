@@ -7,7 +7,7 @@ from dash import html, dcc
 import dash_bootstrap_components as dbc
 
 # Gráficos
-from .componentes.gastos_charts import grafico_gastos_fornecedor, grafico_gastos_tipo_despesa, grafico_sazonalidade
+from .componentes.gastos_charts import grafico_gastos_fornecedor, grafico_gastos_tipo_despesa, grafico_sazonalidade, indicador_numero_gastos, indicador_gasto_total, ticket_medio_gastos
 from .componentes.frente_charts import grafico_tabela_frentes
 
 
@@ -43,6 +43,9 @@ df_frente = pd.read_csv(csv_path_frente)
 opcoes_partido =df['siglaPartido'].unique().tolist()
 opcoes_politico = df['nome'].unique().tolist()
 
+print(type(indicador_gasto_total))
+print(type(indicador_numero_gastos))
+print(type(ticket_medio_gastos))
 
 # Estilo do layout
 sidebar_style = {
@@ -108,8 +111,21 @@ def layout_pagina_1():
     
     # Conteúdo principal
     html.Div([  # div principal que vai conter o conteúdo
+
+
+    html.Div([
+
+        dcc.Graph(id='indicador_gasto_total', figure=indicador_gasto_total(df), 
+                  style={'display': 'inline-block', 'width': '32%', 'marginRight': '2%'}),
+
+        dcc.Graph(id='indicador_numero_gastos', figure=indicador_numero_gastos(df), 
+                  style={'display': 'inline-block', 'width': '32%', 'marginRight': '2%'}),
+
+        dcc.Graph(id='ticket_medio_gastos', figure=ticket_medio_gastos(df), 
+                  style={'display': 'inline-block', 'width': '32%'})
+    ]),
     
-    
+
     html.Div([
         dcc.Graph(
         id='grafico_gastos_sazonalidade',
