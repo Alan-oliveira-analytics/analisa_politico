@@ -3,6 +3,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 from pathlib import Path
 from dash import dash_table
+from dash import html
 
 """ ----------------CONFIGURAÇÃO DE CAMINHO---------------- """
 def create_directory(path: Path):
@@ -40,9 +41,6 @@ df_frente.head()
 df.head()
 # criando uma variável que comporta id's únicos
 df_unique_id = df.sort_values(['id']).drop_duplicates('id', keep='first')
-
-
-# top 10 gastos por fornecedor
 def grafico_gastos_fornecedor(df, partido=None, politico=None):
 
     if politico:
@@ -61,53 +59,84 @@ def grafico_gastos_fornecedor(df, partido=None, politico=None):
 
     df = df.sort_values('valorLiquido', ascending=False)
 
-    fig = dash_table.DataTable(
-        columns=[
-            {'name': 'Parlamentar', 'id': 'nome'},
-            {'name': 'Fornecedor', 'id': 'nomeFornecedor'},
-            {'name': 'Valor Líquido', 'id': 'valorLiquido', 'type': 'numeric', 'format': {'specifier': ',.2f'}},
-            {'name': 'Nota Fiscal', 'id': 'link_nota', 'presentation': 'markdown'},
-            {'name': 'CNPJ', 'id': 'cnpjCpfFornecedor'},
-          
-        ],
-        data=df.to_dict('records'),
-            style_table={
-                'maxHeight': '400px',   # limita altura e ativa scroll vertical
-                'overflowY': 'auto',
-                'overflowX': 'auto',    # scroll horizontal se precisar
-                'border': '1px solid lightgray',
-    },
-            style_cell={
-                'textAlign': 'left',
-                'fontSize': '13px',
-                'padding': '6px',
-                'whiteSpace': 'normal',
-    },
-            style_cell_conditional=[
-            {
-                'if': {'column_id': 'nomeFornecedor', 'column_id': 'nome'},
-                'minWidth': '100px',
-                'maxWidth': '160px',
-                'width': '160px',
+    columns = [
+        {'name': 'Parlamentar', 'id': 'nome'},
+        {'name': 'Fornecedor', 'id': 'nomeFornecedor'},
+        {'name': 'Valor Líquido', 'id': 'valorLiquido', 'type': 'numeric', 'format': {'specifier': ',.2f'}},
+        {'name': 'Nota Fiscal', 'id': 'link_nota', 'presentation': 'markdown'},
+        {'name': 'CNPJ', 'id': 'cnpjCpfFornecedor'},
+    ]
+
+    style_table = {
+        'maxHeight': '400px',
+        'overflowY': 'auto',
+        'overflowX': 'auto',
+        'border': '1px solid white',
+    }
+
+    style_cell = {
+        'textAlign': 'left',
+        'fontSize': '13px',
+        'padding': '6px',
+        'whiteSpace': 'normal',
+        'border': '1px solid white',
+    }
+
+    style_cell_conditional = [
+        {
+            'if': {'column_id': col},
+            'minWidth': '100px',
+            'maxWidth': '160px',
+            'width': '160px',
+            'backgroundColor': '#e6e8e3',
+        } for col in ['nomeFornecedor', 'nome']
+    ] + [
+        {
+            'if': {'column_id': 'valorLiquido'},
+            'textAlign': 'right',
+            'backgroundColor': '#e6e8e3',
         },
         {
-                'if': {'column_id': 'valorLiquido'},
-                'textAlign': 'right'
+            'if': {'column_id': 'link_nota'},
+            'textAlign': 'center',
+            'backgroundColor': '#e6e8e3',
         },
         {
-                'if': {'column_id': 'link_nota'},
-                'textAlign': 'center'
+            'if': {'column_id': 'cnpjCpfFornecedor'},
+            'backgroundColor': '#e6e8e3',
         }
-    ],
-            style_header={
-                'backgroundColor': '#0074D9',
-                'color': 'white',
-                'fontWeight': 'bold',
-                'textAlign': 'center'
-    },
-          
+    ]
+
+    style_data_conditional = [
+        {
+            'if': {'column_id': 'valorLiquido'},
+            'backgroundColor': '#e6e8e3',
+        }
+    ]
+
+    style_header = {
+        'backgroundColor': '#65727a',
+        'color': 'white',
+        'fontWeight': 'bold',
+        'textAlign': 'center',
+        'border': '1px solid white',
+    }
+
+    table = dash_table.DataTable(
+        columns=columns,
+        data=df.to_dict('records'),
+        style_table=style_table,
+        fixed_rows={'headers': True},
+        style_cell=style_cell,
+        style_cell_conditional=style_cell_conditional,
+        style_data_conditional=style_data_conditional,
+        style_header=style_header,
     )
-    return fig
+
+    return html.Div([
+        html.H4("Detalhamento de Despesas", style={'textAlign': 'center', 'marginBottom': '16px'}),
+        table
+    ])
 
 
 
@@ -135,11 +164,12 @@ def grafico_gastos_tipo_despesa(df, espectro=None, partido=None, politico=None):
         title='TOP 10 - Gastos por Tipo de Despesa',
         text='valorLiquido_fmt',
         orientation='h',
-        labels={'valorLiquido': '', 'tipoDespesa': ''}
+        labels={'valorLiquido': '', 'tipoDespesa': ''},
+        color_discrete_sequence=['#65727a']
     )
     #invertendo para mostrar do maior para o menor
     fig = fig.update_yaxes(categoryorder='total ascending')
-
+    fig.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
     return fig
 
 
@@ -158,20 +188,44 @@ def grafico_sazonalidade(df, espectro=None, partido=None, politico=None):
     df['mes'] = pd.to_datetime(df['dataDocumento']).dt.month
     df["mes"] = df["mes"].astype(str)
     df_graph_5 = df.groupby(['ano', 'mes'])['valorLiquido'].sum().reset_index()
+    # Calcula a média geral e os limites de controle (UCL/LCL)
+    media_geral = df_graph_5['valorLiquido'].mean()
+    std_geral = df_graph_5['valorLiquido'].std()
+    ucl = media_geral + 3 * std_geral
+    lcl = max(media_geral - 3 * std_geral, 0)
+
+    # Destaca pontos acima do UCL
+    df_graph_5['acima_ucl'] = df_graph_5['valorLiquido'] > ucl
 
     fig = px.line(
         df_graph_5,
         x='mes',
         y='valorLiquido',
         color='ano',
-        title='Sazonalidade dos Gastos',
+        title='Gráfico de Controle dos Gastos',
         labels={'valorLiquido': '', 'mes': 'Mês'},
         markers=True,
         text='valorLiquido',
-        ).update_yaxes(showticklabels=False)
-        
+    ).update_yaxes(showticklabels=False)
+
+    # Adiciona linhas de média, UCL e LCL
+    fig.add_hline(y=media_geral, line_dash="dash", line_color="#bec3bc", annotation_text="Média", annotation_position="top left")
+    fig.add_hline(y=ucl, line_dash="dot", line_color="red", annotation_text="UCL", annotation_position="top left")
+    fig.add_hline(y=lcl, line_dash="dot", line_color="orange", annotation_text="LCL", annotation_position="bottom left")
+
+    # Adiciona destaque para pontos acima do UCL
+    for _, row in df_graph_5[df_graph_5['acima_ucl']].iterrows():
+        fig.add_scatter(
+            x=[row['mes']],
+            y=[row['valorLiquido']],
+            mode='markers',
+            marker=dict(color='red', size=12, symbol='star'),
+            name='Acima UCL',
+            showlegend=False
+        )
     fig.update_traces(texttemplate='%{y:.2s}', textposition='top center')
-    fig.update_layout(margin=dict(t=60, b=60))
+    fig.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
+        
     return fig
 
 
@@ -196,6 +250,10 @@ def indicador_gasto_total(df, partido=None, politico=None):
 
     indicador.update_traces(number={'valueformat': ',.2f', 'prefix': 'R$'})
     
+    indicador.update_layout(
+    paper_bgcolor='rgba(0,0,0,0)',  
+    plot_bgcolor='rgba(0,0,0,0)'    
+)
     return indicador
 
 
@@ -218,6 +276,10 @@ def indicador_numero_gastos(df, partido=None, politico=None):
     ))
 
     indicador.update_traces(number={'valueformat': '.d', 'prefix': ''})
+    
+    indicador.update_layout(
+    paper_bgcolor='rgba(0,0,0,0)',  
+    plot_bgcolor='rgba(0,0,0,0)')
 
     return indicador
 
@@ -247,5 +309,9 @@ def ticket_medio_gastos(df, partido=None, politico=None):
     ))
 
     indicador.update_traces(number={'valueformat': ',.2f', 'prefix': 'R$'})
+    
+    indicador.update_layout(
+    paper_bgcolor='rgba(0,0,0,0)',  
+    plot_bgcolor='rgba(0,0,0,0)')
 
     return indicador

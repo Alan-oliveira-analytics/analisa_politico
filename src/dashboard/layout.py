@@ -55,13 +55,13 @@ sidebar_style = {
     'bottom': 0,
     'width': '16%',
     'padding': '20px',
-    'background-color': '#f8f9fa',
+    'background-color': '#8f9a9c',
 }
 
 content_style = {
-    'margin-left': '18rem',
+    'margin-left': '16%', 
     'padding': '20px',
-    'background-color': '#ffffff',
+    'background-color': '#e6e8e3',
 }
 
 
@@ -72,11 +72,11 @@ def layout_pagina_1():
         #sidebar
         html.Div(
     [
-        html.H1(f'Dashboard', style={'font-size': '36px'}),
+        html.H1(f'Dashboard', style={'font-size': '36px', 'color': '#ffffff', 'textAlign': 'center'}),
         html.Hr(),
         html.P(
             'Análise de gastos de políticos',
-            style={'font-size': '20px', 'color': '#6c757d'}
+            style={'font-size': '20px', 'color': '#ffffff', 'textAlign': 'center'}
         ),
         html.Hr(),
         dbc.Nav(
@@ -115,14 +115,53 @@ def layout_pagina_1():
 
     html.Div([
 
-        dcc.Graph(id='indicador_gasto_total', figure=indicador_gasto_total(df), 
-                  style={'display': 'inline-block', 'width': '32%', 'marginRight': '2%'}),
+        dcc.Graph(
+            id='indicador_gasto_total',
+            figure=indicador_gasto_total(df),
+            style={
+                'display': 'inline-block',
+                'width': '31%',
+                'marginRight': '1%',
+                'height': '200px',
+                'backgroundColor': '#bec3bc',
+                'border': '1px solid #dee2e6',
+                'borderRadius': '8px',
+                'marginBottom': '20px',
+                'boxShadow': '0 2px 4px rgba(0,0,0,0.05)'
+            }
+        ),
 
-        dcc.Graph(id='indicador_numero_gastos', figure=indicador_numero_gastos(df), 
-                  style={'display': 'inline-block', 'width': '32%', 'marginRight': '2%'}),
+        dcc.Graph(
+            id='indicador_numero_gastos',
+            figure=indicador_numero_gastos(df),
+            style={
+                'display': 'inline-block',
+                'width': '31%',
+                'marginRight': '1%',
+                'height': '200px',
+                'backgroundColor': '#bec3bc',
+                'border': '1px solid #dee2e6',
+                'borderRadius': '8px',
+                'marginBottom': '20px',
+                'boxShadow': '0 2px 4px rgba(0,0,0,0.05)'
+            }
+        ),
 
-        dcc.Graph(id='ticket_medio_gastos', figure=ticket_medio_gastos(df), 
-                  style={'display': 'inline-block', 'width': '32%'})
+        dcc.Graph(
+            id='ticket_medio_gastos',
+            figure=ticket_medio_gastos(df),
+            style={
+                'display': 'inline-block',
+                'width': '31%',
+                'marginRight': '1%',
+                'height': '200px',
+                'backgroundColor': '#bec3bc',
+                'border': '1px solid #dee2e6',
+                'borderRadius': '8px',
+                'marginBottom': '20px',
+                'boxShadow': '0 2px 4px rgba(0,0,0,0.05)'
+            }
+        )
     ]),
     
 
@@ -130,23 +169,7 @@ def layout_pagina_1():
         dcc.Graph(
         id='grafico_gastos_sazonalidade',
         figure=grafico_sazonalidade(df),
-    )], style={'width': '50%', 'display': 'inline-block'}),
-
-    
-    html.Div([
-        dcc.Graph(
-        id='grafico_frentes_parlamentares',
-        figure=grafico_tabela_frentes(df_frente),
-    )], style={
-        'width': '50%', 
-        'display': 'inline-block',
-        'backgroundColor': '#f8f9fa',      
-        'border': '1px solid #dee2e6',   
-        'borderRadius': '8px',         
-        'padding': '20px',                
-        'marginBottom': '20px',           
-        'boxShadow': '0 2px 4px rgba(0,0,0,0.05)' 
-        }),
+    )], style={'width': '100%', 'display': 'inline-block'}),
 
 
     html.Div(

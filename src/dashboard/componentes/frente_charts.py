@@ -46,7 +46,8 @@ def grafico_tabela_frentes(df, politico=None, partido=None):
     fig = go.Figure(data=[go.Table(
     header=dict(
         values=["<b>Nome</b>", "<b>Partido</b>", "<b>Frente Parlamentar</b>", "<b>Cargo</b>"],
-        fill_color='lightblue',
+        fill_color='#65727a',
+        font=dict(color='white'),
         align='left'
     ),
     cells=dict(
@@ -56,11 +57,11 @@ def grafico_tabela_frentes(df, politico=None, partido=None):
             df.titulo_frente,
             df.titulo
         ],
-        fill_color='lavender',
+        fill_color='#d7dacf',
         align='left'
     )
     )])
 
-    fig.update_layout(title="Frentes Parlamentares que o Candidato Participa")
+    fig.update_layout(title="Frentes Parlamentares que o Candidato Participa", paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
 
     return fig
