@@ -1,0 +1,24 @@
+/* assets/custom.css */
+
+.nav-link {
+    background-color: #8f9a9c;
+    color: #ffffff;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 18px;
+    text-align: center;
+    border: 2px solid #e6e8e3;
+    transition: 0.3s;
+}
+
+/* Quando a página estiver ativa */
+.nav-link.active {
+    background-color: #e6e8e3 !important; 
+    color: #8f9a9c !important;
+    border: 2px solid #8f9a9c !important;
+}
+
+.nav-link:hover {
+    color: #00090a;
+}

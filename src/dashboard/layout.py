@@ -43,10 +43,6 @@ df_frente = pd.read_csv(csv_path_frente)
 opcoes_partido =df['siglaPartido'].unique().tolist()
 opcoes_politico = df['nome'].unique().tolist()
 
-print(type(indicador_gasto_total))
-print(type(indicador_numero_gastos))
-print(type(ticket_medio_gastos))
-
 # Estilo do layout
 sidebar_style = {
     'position': 'fixed',
@@ -81,8 +77,8 @@ def layout_pagina_1():
         html.Hr(),
         dbc.Nav(
             [
-                dbc.NavLink("Página 1", href="/pagina-1", active="exact"),
-                dbc.NavLink("Página 2", href="/pagina-2", active="exact"),
+                dbc.NavLink("Análise de Gastos", href="/analise-gastos", active="exact"),
+                dbc.NavLink("Atividade Política", href="/atividade-politica", active="exact"),
             ],
             vertical=True,
             pills=True,
@@ -122,12 +118,12 @@ def layout_pagina_1():
                 'display': 'inline-block',
                 'width': '31%',
                 'marginRight': '1%',
-                'height': '200px',
+                'height': '100px',
                 'backgroundColor': '#bec3bc',
                 'border': '1px solid #dee2e6',
                 'borderRadius': '8px',
                 'marginBottom': '20px',
-                'boxShadow': '0 2px 4px rgba(0,0,0,0.05)'
+                'boxShadow': '0 2px 4px rgba(0,0,0,0.05)',
             }
         ),
 
@@ -138,7 +134,7 @@ def layout_pagina_1():
                 'display': 'inline-block',
                 'width': '31%',
                 'marginRight': '1%',
-                'height': '200px',
+                'height': '100px',
                 'backgroundColor': '#bec3bc',
                 'border': '1px solid #dee2e6',
                 'borderRadius': '8px',
@@ -154,7 +150,7 @@ def layout_pagina_1():
                 'display': 'inline-block',
                 'width': '31%',
                 'marginRight': '1%',
-                'height': '200px',
+                'height': '100px',
                 'backgroundColor': '#bec3bc',
                 'border': '1px solid #dee2e6',
                 'borderRadius': '8px',
@@ -162,7 +158,12 @@ def layout_pagina_1():
                 'boxShadow': '0 2px 4px rgba(0,0,0,0.05)'
             }
         )
-    ]),
+    ],  style={
+                'display': 'flex',
+                'justifyContent': 'center',    
+                'gap': '20px',                 
+                'marginBottom': '30px'
+    }),
     
 
     html.Div([

@@ -245,7 +245,8 @@ def indicador_gasto_total(df, partido=None, politico=None):
     indicador = go.Figure(go.Indicator(
     mode = "number",
     value = total_gasto,
-    title = {"text": "Gasto Total"}
+    title = {"text": "Gasto Total", 'font': {'size': 18}},
+    number={'font': {'size': 15}}
     ))
 
     indicador.update_traces(number={'valueformat': ',.2f', 'prefix': 'R$'})
@@ -272,7 +273,8 @@ def indicador_numero_gastos(df, partido=None, politico=None):
     indicador = go.Figure(go.Indicator(
     mode = "number",
     value = total_gastos,
-    title = {"text": "Número de Gastos"}
+    title = {"text": "Número de Gastos", 'font': {'size': 18}},
+    number={'font': {'size': 15}}
     ))
 
     indicador.update_traces(number={'valueformat': '.d', 'prefix': ''})
@@ -305,7 +307,8 @@ def ticket_medio_gastos(df, partido=None, politico=None):
     indicador = go.Figure(go.Indicator(
     mode = "number",
     value = ticket_medio,
-    title = {"text": "Ticket Médio"}
+    title = {"text": "Ticket Médio", 'font': {'size': 18}},
+    number={'font': {'size': 15}}
     ))
 
     indicador.update_traces(number={'valueformat': ',.2f', 'prefix': 'R$'})

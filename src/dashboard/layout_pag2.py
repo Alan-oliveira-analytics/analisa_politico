@@ -52,13 +52,13 @@ sidebar_style = {
     'bottom': 0,
     'width': '16%',
     'padding': '20px',
-    'background-color': '#f8f9fa',
+    'background-color': '#8f9a9c',
 }
 
 content_style = {
-    'margin-left': '18rem',
+    'margin-left': '16%', 
     'padding': '20px',
-    'background-color': '#ffffff',
+    'background-color': '#e6e8e3',
 }
 
 
@@ -69,23 +69,24 @@ def layout_pagina_2():
         #sidebar
         html.Div(
     [
-        html.H1(f'Dashboard', style={'font-size': '36px'}),
+        html.H1(f'Dashboard', style={'font-size': '36px', 'color': '#ffffff', 'textAlign': 'center'}),
         html.Hr(),
         html.P(
             'Análise de gastos de políticos',
-            style={'font-size': '20px', 'color': '#6c757d'}
+            style={'font-size': '20px', 'color': '#ffffff', 'textAlign': 'center'}
         ),
         html.Hr(),
         dbc.Nav(
             [
-                dbc.NavLink("Página 1", href="/pagina-1", active="exact"),
-                dbc.NavLink("Página 2", href="/pagina-2", active="exact"),
+                dbc.NavLink("Análise de Gastos", href="/analise-gastos", active="exact"),
+                dbc.NavLink("Atividade Política", href="/atividade-politica", active="exact"),
             ],
             vertical=True,
             pills=True,
         ),
 
         html.Hr(),
+ 
 
         # ---------------------------------FILTROS--------------------------------------       
         html.Div([

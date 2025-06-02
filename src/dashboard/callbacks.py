@@ -3,7 +3,8 @@ import pandas as pd
 from pathlib import Path
 
 # Importa os componentes do Dash
-from .componentes.gastos_charts import grafico_sazonalidade, grafico_gastos_fornecedor, grafico_gastos_tipo_despesa
+from .componentes.gastos_charts import grafico_sazonalidade, grafico_gastos_fornecedor, grafico_gastos_tipo_despesa, indicador_gasto_total, indicador_numero_gastos, ticket_medio_gastos
+
 from.componentes.frente_charts import grafico_tabela_frentes
 
 # Importa o layout das páginas
@@ -50,9 +51,9 @@ def registro_callback(app):
     @app.callback(Output('page-content', 'children'),
               Input('url', 'pathname'))
     def render_page_content(pathname):
-        if pathname == '/pagina-1' or pathname == '/':
+        if pathname == '/analise-gastos' or pathname == '/':
             return layout_pagina_1()
-        elif pathname == '/pagina-2':
+        elif pathname == '/atividade-politica':
             return layout_pagina_2()
         else:
             return html.Div([
@@ -185,4 +186,74 @@ def registro_callback(app):
         return opacoes_partido
     
 
+    """Atualiza o indicador de gasto total baseado no politico selecionado"""
 
+    @app.callback(
+        Output('indicador_gasto_total', 'figure', allow_duplicate=True),
+        Input('drop_politico', 'value'),
+        prevent_initial_call=True
+    )
+
+    def atualizar_indicador_gasto_total(politico):
+        return indicador_gasto_total(df, politico=politico)
+    
+
+    """Atualiza o indicador de numero de gastos baseado no politico selecionado"""
+
+    @app.callback(
+        Output('indicador_numero_gastos', 'figure', allow_duplicate=True),
+        Input('drop_politico', 'value'),
+        prevent_initial_call=True
+    )
+
+    def atualizar_indicador_numero_gastos(politico):
+        return indicador_numero_gastos(df, politico=politico)
+    
+
+    """Atualiza o indicador ticket médio baseado no politico selecionado"""
+
+    @app.callback(
+        Output('ticket_medio_gastos', 'figure', allow_duplicate=True),
+        Input('drop_politico', 'value'),
+        prevent_initial_call=True
+    )
+
+    def atualizar_ticket_medio_gastos(politico):
+        return ticket_medio_gastos(df, politico=politico)
+    
+
+    """Atualiza o indicador de gasto total baseado no partido selecionado"""
+
+    @app.callback(
+        Output('indicador_gasto_total', 'figure', allow_duplicate=True),
+        Input('drop_partido', 'value'),
+        prevent_initial_call=True
+    )
+
+    def atualizar_indicador_gasto_total(partido):
+        return indicador_gasto_total(df, partido=partido)
+    
+
+    """Atualiza o indicador de numero de gastos baseado no partido selecionado"""
+
+    @app.callback(
+        Output('indicador_numero_gastos', 'figure', allow_duplicate=True),
+        Input('drop_partido', 'value'),
+        prevent_initial_call=True
+    )
+
+    def atualizar_indicador_numero_gastos(partido):
+        return indicador_numero_gastos(df, partido=partido)
+    
+
+    """Atualiza o indicador ticket médio baseado no partido selecionado"""
+
+    @app.callback(
+        Output('ticket_medio_gastos', 'figure', allow_duplicate=True),
+        Input('drop_partido', 'value'),
+        prevent_initial_call=True
+    )
+
+    def atualizar_ticket_medio_gastos(partido):
+        return ticket_medio_gastos(df, partido=partido)
+    
