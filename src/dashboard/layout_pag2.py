@@ -79,7 +79,7 @@ def layout_pagina_2():
         dbc.Nav(
             [
                 dbc.NavLink("Análise de Gastos", href="/analise-gastos", active="exact"),
-                dbc.NavLink("Atividade Política", href="/atividade-politica", active="exact"),
+                dbc.NavLink("Detecção de Anomalias", href="/deteccao-anomalia", active="exact"),
             ],
             vertical=True,
             pills=True,

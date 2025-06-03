@@ -53,7 +53,7 @@ def registro_callback(app):
     def render_page_content(pathname):
         if pathname == '/analise-gastos' or pathname == '/':
             return layout_pagina_1()
-        elif pathname == '/atividade-politica':
+        elif pathname == '/deteccao-anomalia':
             return layout_pagina_2()
         else:
             return html.Div([

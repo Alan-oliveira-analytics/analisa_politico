@@ -78,7 +78,7 @@ def layout_pagina_1():
         dbc.Nav(
             [
                 dbc.NavLink("Análise de Gastos", href="/analise-gastos", active="exact"),
-                dbc.NavLink("Atividade Política", href="/atividade-politica", active="exact"),
+                dbc.NavLink("Detecção de Anomalias", href="/deteccao-anomalia", active="exact"),
             ],
             vertical=True,
             pills=True,
@@ -116,10 +116,9 @@ def layout_pagina_1():
             figure=indicador_gasto_total(df),
             style={
                 'display': 'inline-block',
-                'width': '31%',
-                'marginRight': '1%',
+                'width': '300px',
                 'height': '100px',
-                'backgroundColor': '#bec3bc',
+                'backgroundColor': '#ffffff',
                 'border': '1px solid #dee2e6',
                 'borderRadius': '8px',
                 'marginBottom': '20px',
@@ -132,10 +131,9 @@ def layout_pagina_1():
             figure=indicador_numero_gastos(df),
             style={
                 'display': 'inline-block',
-                'width': '31%',
-                'marginRight': '1%',
+                'width': '300px',
                 'height': '100px',
-                'backgroundColor': '#bec3bc',
+                'backgroundColor': '#ffffff',
                 'border': '1px solid #dee2e6',
                 'borderRadius': '8px',
                 'marginBottom': '20px',
@@ -148,10 +146,9 @@ def layout_pagina_1():
             figure=ticket_medio_gastos(df),
             style={
                 'display': 'inline-block',
-                'width': '31%',
-                'marginRight': '1%',
+                'width': '300px',
                 'height': '100px',
-                'backgroundColor': '#bec3bc',
+                'backgroundColor': '#ffffff',
                 'border': '1px solid #dee2e6',
                 'borderRadius': '8px',
                 'marginBottom': '20px',

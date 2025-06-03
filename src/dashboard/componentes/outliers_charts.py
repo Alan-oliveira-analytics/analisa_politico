@@ -123,3 +123,28 @@ def top_parlamentares_gastos(df, top_n=10):
     return fig
 
 top_parlamentares_gastos(df)
+
+
+"""" ----------------HISTOGRAMA---------------- """
+
+def histograma_gastos(df, politico=None):
+
+    if politico:
+        df = df[df['nome'] == politico]
+
+    gasto_parlamentar = df['valorLiquido'].sum()
+
+    fig = go.Figure()
+
+    # Histograma
+    fig.add_trace(go.Histogram(
+        x=df['valorLiquido'],
+        xbins=dict(start=0, end=30000, size=2000),
+        marker_color='#A1C5AB'
+    ))
+
+
+
+    return fig
+
+histograma_gastos(df)
