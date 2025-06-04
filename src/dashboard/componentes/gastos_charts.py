@@ -40,7 +40,9 @@ df_frente.head()
 
 df.head()
 # criando uma variável que comporta id's únicos
+
 df_unique_id = df.sort_values(['id']).drop_duplicates('id', keep='first')
+
 def grafico_gastos_fornecedor(df, partido=None, politico=None):
 
     if politico:
