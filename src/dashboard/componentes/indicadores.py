@@ -88,7 +88,7 @@ def gerar_indicador(titulo, valor, prefixo='', valor_formatado=',.2f'):
     indicador = go.Figure(go.Indicator(
             mode="number",
             value=valor,
-            title={"text": titulo, 'font': {'size': 18}},
+            title={"text": titulo, 'font': {'size': 14}},
             number={'prefix': prefixo, 'valueformat': valor_formatado, 'font': {'size': 15}},
             domain={'x': [0, 1], 'y': [0, 1]}
         ))
@@ -102,14 +102,14 @@ def gerar_indicador(titulo, valor, prefixo='', valor_formatado=',.2f'):
 """ ----------------INDICADORES---------------- """
 
 
-def indicadores(tipo, df, partido=None, politico=None):
+def indicadores(tipo, df, ano=None, mes=None):
 
     # filtros para o callback
-    if politico:
-        df = df[df['nome'] == politico]
+    if mes:
+        df = df[df['mes_nome'] == mes]
 
-    if partido:
-        df = df[df['siglaPartido'] == partido]
+    if ano:
+        df = df[df['ano'] == ano]
 
 
     if tipo=="media":
@@ -130,7 +130,7 @@ def indicadores(tipo, df, partido=None, politico=None):
     
     elif tipo=="deputados_outliers":
         return gerar_indicador(
-            titulo="Parlamentares Outliers",
+            titulo="Número de Parlamentares Outliers",
             valor=calcular_deputados_outliers(df),
             valor_formatado=',d'
         )
@@ -138,7 +138,7 @@ def indicadores(tipo, df, partido=None, politico=None):
     elif tipo=="categoria_mais_gastos":
         valor, categoria = calcular_categoria_mais_gastos(df)
         return gerar_indicador(
-            titulo=f"Categoria com Mais Gastos - {categoria}",
+            titulo=f"Categoria com Mais Gastos:<br>{categoria}",
             valor=valor,
             prefixo='R$',
             valor_formatado=',.2f'

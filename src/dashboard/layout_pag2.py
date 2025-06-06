@@ -7,8 +7,8 @@ from dash import html, dcc
 import dash_bootstrap_components as dbc
 
 # Gráficos
+from .componentes.indicadores import indicadores
 from .componentes.outliers_charts import boxplot_gastos, boxplot_gastos_parlamentar, boxplot_gastos_partido, top_parlamentares_gastos
-
 
 
 """ ----------------CONFIGURAÇÃO DE CAMINHO---------------- """
@@ -40,9 +40,12 @@ csv_path_frente = DATA_DIR / 'membros_frente.csv'
 df = pd.read_csv(csv_path)
 df_frente = pd.read_csv(csv_path_frente)
 
-opcoes_partido =df['siglaPartido'].unique().tolist()
-opcoes_politico = df['nome'].unique().tolist()
+opcoes_meses = [
+    'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+    'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+]
 
+opcoes_ano = df['ano'].unique().tolist()
 
 # Estilo do layout
 sidebar_style = {
@@ -90,14 +93,14 @@ def layout_pagina_2():
 
         # ---------------------------------FILTROS--------------------------------------       
         html.Div([
-            'Escolha o partido:',
-            dcc.Dropdown(opcoes_partido, value='Todos', id='drop_partido'),
+            'Escolha o ano:',
+            dcc.Dropdown(opcoes_ano, value='Todos', id='drop_ano'),
         ]),
 
         html.Hr(),
         html.Div([
-            'Escolha o Político:',
-            dcc.Dropdown(opcoes_politico, value='Todos', id='drop_politico'),
+            'Escolha o mês:',
+            dcc.Dropdown(opcoes_meses, value='Todos', id='drop_mes'),
         ]),
 
     ],
@@ -111,11 +114,74 @@ def layout_pagina_2():
 
 
         html.Div([
+
+
             dcc.Graph(
-            id='boxplot_gastos',
-            figure=boxplot_gastos(df),
+                id = 'indicador_media',
+                figure=indicadores(tipo='media', df=df),
+                style={
+                'display': 'inline-block',
+                'width': '400px',
+                'height': '100px',
+                'backgroundColor': '#ffffff',
+                'border': '1px solid #dee2e6',
+                'borderRadius': '8px',
+                'marginBottom': '20px',
+                'boxShadow': '0 2px 4px rgba(0,0,0,0.05)',
+            }
+            ),
+
+            dcc.Graph(
+                id = 'indicador_mediana',
+                figure=indicadores(tipo='mediana', df=df),
+                style={
+                'display': 'inline-block',
+                'width': '400px',
+                'height': '100px',
+                'backgroundColor': '#ffffff',
+                'border': '1px solid #dee2e6',
+                'borderRadius': '8px',
+                'marginBottom': '20px',
+                'boxShadow': '0 2px 4px rgba(0,0,0,0.05)',
+            }
+            ),
+
+            dcc.Graph(
+                id = 'indicador_deputados_outliers',
+                figure=indicadores(tipo='deputados_outliers', df=df),
+                style={
+                'display': 'inline-block',
+                'width': '400px',
+                'height': '100px',
+                'backgroundColor': '#ffffff',
+                'border': '1px solid #dee2e6',
+                'borderRadius': '8px',
+                'marginBottom': '20px',
+                'boxShadow': '0 2px 4px rgba(0,0,0,0.05)',
+            }
+            ),
+
+            dcc.Graph(
+                id = 'categoria_mais_gastos',
+                figure=indicadores(tipo='categoria_mais_gastos', df=df),
+                style={
+                'display': 'inline-block',
+                'width': '400px',
+                'height': '100px',
+                'backgroundColor': '#ffffff',
+                'border': '1px solid #dee2e6',
+                'borderRadius': '8px',
+                'marginBottom': '20px',
+                'boxShadow': '0 2px 4px rgba(0,0,0,0.05)',
+            }
             )
-        ], style={'width': '50%', 'display': 'inline-block'}),
+
+        ], style={
+                'display': 'flex',
+                'justifyContent': 'center',    
+                'gap': '10px',                 
+                'marginBottom': '30px'
+                  }),
 
 
         html.Div([

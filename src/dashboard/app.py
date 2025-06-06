@@ -1,5 +1,4 @@
 from dash import Dash, dcc, html
-from .layout import layout_pagina_1
 from .callbacks import registro_callback
 
 import dash_bootstrap_components as dbc
