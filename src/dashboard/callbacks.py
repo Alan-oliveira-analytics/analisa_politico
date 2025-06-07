@@ -7,6 +7,8 @@ from .componentes.gastos_charts import grafico_sazonalidade, grafico_gastos_forn
 
 from.componentes.frente_charts import grafico_tabela_frentes
 
+from .componentes.indicadores import indicadores, calcular_categoria_mais_gastos
+
 # Importa o layout das páginas
 from .layout import layout_pagina_1
 from .layout_pag2 import layout_pagina_2
@@ -76,18 +78,17 @@ def registro_callback(app):
         return grafico_gastos_fornecedor(df, partido=partido)
 
 
-
-
     """Atualiza o gráfico de gastos por fornecedor baseado no politico selecionado"""
 
     @app.callback(
         Output('grafico_gastos_por_fornecedor', 'children'),
         Input('drop_politico', 'value'),
     )
-
+    
     def atualizar_grafico_politico(politico):
         return grafico_gastos_fornecedor(df, politico=politico)
     
+
     """Atualiza o gráfico de gastos por despesa baseado no partido selecionado"""
 
     @app.callback(
@@ -98,6 +99,7 @@ def registro_callback(app):
 
     def atualizar_grafico_despesa(partido):
         return grafico_gastos_tipo_despesa(df, partido=partido)
+    
     
     """Atualiza o gráfico de gastos por despesa baseado no politico selecionado"""
 
@@ -116,6 +118,7 @@ def registro_callback(app):
         Input('drop_politico', 'value'),
         prevent_initial_call=True
     )
+    
     def atualizar_grafico_sazonalidade(politico):
         return grafico_sazonalidade(df, politico=politico)
     
@@ -126,6 +129,7 @@ def registro_callback(app):
         Output('grafico_gastos_sazonalidade', 'figure'),
         Input('drop_partido', 'value'),
     )
+    
     def atualizar_grafico_sazonalidade_partido(partido):
         return grafico_sazonalidade(df, partido=partido)
 
@@ -137,6 +141,7 @@ def registro_callback(app):
         Input('drop_politico', 'value'),
         prevent_initial_call=True
     )
+    
     def atualizar_grafico(politico):
         return grafico_tabela_frentes(df_frente, politico=politico)
 
@@ -146,6 +151,7 @@ def registro_callback(app):
         Output('grafico_frentes_parlamentares', 'figure'),
         Input('drop_partido', 'value')
     )
+    
     def atualizar_grafico(partido):
         return grafico_tabela_frentes(df_frente, partido=partido)
 
@@ -157,6 +163,7 @@ def registro_callback(app):
         Input('drop_partido', 'value'),
         prevent_initial_call=True
     )
+    
     def atualizar_opcoes_politico(partido):
         if partido == 'Todos' or partido is None:
             opcoes_politico = [{'label': i, 'value': i} for i in df['nome'].unique()]
@@ -174,7 +181,6 @@ def registro_callback(app):
         Input('drop_politico', 'value'),
         prevent_initial_call=True
     )
-
 
     def atualizar_opcoes_partido(politico):
         if politico == 'Todos' or politico is None:
@@ -257,3 +263,39 @@ def registro_callback(app):
     def atualizar_ticket_medio_gastos(partido):
         return ticket_medio_gastos(df, partido=partido)
     
+    
+    """Função para gerar callback dos indicadores baseado no ano/mes selecionado"""
+    
+    def gerar_callback_indicador(output_id, tipo, df):
+        @app.callback(
+            Output(output_id, 'figure', allow_duplicate=True),
+            Input('drop_mes', 'value'),
+            Input('drop_ano', 'value'),
+            prevent_initial_call=True
+        )
+
+        def atualizar_indicador(mes, ano):
+            
+            # Monta um dicionário de filtros
+            filtros = {}
+
+            if ano is not None:
+                filtros['ano'] = ano
+            
+            if mes is not None:
+                filtros['mes'] = mes
+
+            # Chama a função indicadores com os filtros corretos
+            return indicadores(tipo, df, **filtros)
+            
+    # atualizar indicador média
+    gerar_callback_indicador('indicador_media', 'media', df)
+    
+    # atualizar indicador mediana
+    gerar_callback_indicador('indicador_mediana', 'mediana', df)
+
+    # atualizar indicador deputados outliers
+    gerar_callback_indicador('indicador_deputados_outliers', 'deputados_outliers', df)
+
+    # atualizar indicador categoria mais gastos
+    gerar_callback_indicador('categoria_mais_gastos', 'categoria_mais_gastos', df)

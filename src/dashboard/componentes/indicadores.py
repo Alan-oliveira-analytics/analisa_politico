@@ -70,7 +70,13 @@ def calcular_deputados_outliers(df):
     return len(outliers)
 
 
-def calcular_categoria_mais_gastos(df):
+def calcular_categoria_mais_gastos(df, ano=None, mes=None):
+
+    if mes:
+        df = df[df['mes_nome'] == mes]
+
+    if ano:
+        df = df[df['ano'] == ano]
 
     # Agrupa os dados por categoria e soma os gastos
     df_categoria = df.groupby('tipoDespesa')['valorLiquido'].sum().reset_index()
