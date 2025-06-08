@@ -5,6 +5,8 @@ from pathlib import Path
 # Importa os componentes do Dash
 from .componentes.gastos_charts import grafico_sazonalidade, grafico_gastos_fornecedor, grafico_gastos_tipo_despesa, indicador_gasto_total, indicador_numero_gastos, ticket_medio_gastos
 
+from .componentes.outliers_charts import boxplot_gastos, top_parlamentares_gastos
+
 from.componentes.frente_charts import grafico_tabela_frentes
 
 from .componentes.indicadores import indicadores, calcular_categoria_mais_gastos
@@ -299,3 +301,15 @@ def registro_callback(app):
 
     # atualizar indicador categoria mais gastos
     gerar_callback_indicador('categoria_mais_gastos', 'categoria_mais_gastos', df)
+
+
+    """Callback texto interpretativo interativo do boxplot"""
+    # def gerar_callback_indicador(output_id, nome_col, df):
+    #     @app.callback(
+    #         Output(output_id, 'figure', allow_duplicate=True),
+    #         Input('drop_mes', 'value'),
+    #         Input('drop_ano', 'value'),
+    #         prevent_initial_call=True
+    #     )
+
+    #     def 

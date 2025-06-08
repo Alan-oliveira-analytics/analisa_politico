@@ -42,47 +42,27 @@ def boxplot_gastos(df, nome_col='nome'):
     # Agrupa os dados por parlamentar e soma os gastos
     df_gastos = df.groupby(nome_col)['valorLiquido'].sum().reset_index()
 
-    # Gráfico de boxplot
-    fig = px.box(df_gastos, y="valorLiquido", title='Boxplot de Gastos')
-    fig.update_layout(title_x=0.5)
-    fig.update_layout(xaxis_tickvals=[], xaxis_title="")
+    # boxplot
+    fig = go.Figure()
+    fig.add_trace(go.Box(y=df_gastos['valorLiquido'],
+                         name='Gastos',
+                         hovertext=df_gastos[nome_col],
+                         marker_color = '#8f9a9c',
+                         boxpoints='outliers',
+                         boxmean=True,
+                         ))
+    
+    # alterações layout
+    fig.update_layout(title='Boxplot de Gastos', 
+                      title_x=0.5,
+                      xaxis_tickvals=[],
+                      xaxis_title=''),
     
     # Retorna o gráfico
     return fig
 
 boxplot_gastos(df)
 boxplot_gastos(df, nome_col='siglaPartido')
-
-""" ----------------BOXPLOT DE GASTOS - PARLAMENTAR---------------- """
-
-def boxplot_gastos_parlamentar(df):
-
-    # Agrupa os dados por parlamentar e soma os gastos
-    df_gastos = df.groupby('nome')['valorLiquido'].sum().reset_index()
-
-    # Gráfico de boxplot
-    fig = px.box(df_gastos, y="valorLiquido", x='nome', points="all", title='Gastos por Parlamentar')
-    fig.update_layout(title_x=0.5)
-    fig.update_layout(xaxis_tickvals=[], xaxis_title="")
-    
-    # Retorna o gráfico
-    return fig
-
-
-""" ----------------BOXPLOT DE GASTOS - PARTIDO---------------- """
-
-def boxplot_gastos_partido(df):
-
-    # Agrupa os dados por parlamentar, soma os gastos e adiciona a sigla do partido
-    df_gastos = df.groupby('nome')['valorLiquido'].sum().reset_index()
-    df_gastos['siglaPartido'] = df['siglaPartido']
-
-    # Gráfico de boxplot
-    fig = px.box(df_gastos, x='siglaPartido', y="valorLiquido", title='Gastos por Partido')    
-    fig.update_layout(title_x=0.5)
-
-    # Retorna o gráfico
-    return fig
 
 
 
