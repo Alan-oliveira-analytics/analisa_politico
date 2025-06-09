@@ -8,7 +8,7 @@ import dash_bootstrap_components as dbc
 
 # Gráficos
 from .componentes.indicadores import indicadores
-from .componentes.outliers_charts import boxplot_gastos, top_parlamentares_gastos
+from .componentes.outliers_charts import boxplot_gastos, top_parlamentares_gastos, gerar_interpretador_boxplot
 
 
 """ ----------------CONFIGURAÇÃO DE CAMINHO---------------- """
@@ -192,12 +192,10 @@ def layout_pagina_2():
         ], style={'width': '50%', 'display': 'inline-block'}),
         
  
-        html.Div([
-            dcc.Graph(
-            id='top_parlamentares_gastos',
-            figure=top_parlamentares_gastos(df),
-            )
-        ], style={'width': '50%', 'display': 'inline-block'}),
-
-        ], style=content_style)
+    html.Div([
+        gerar_interpretador_boxplot(df)
+    ],  id='interpretador_boxplot', 
+        style={'width': '50%', 'display': 'inline-block'})
+    
+    ], style=content_style)
 ])

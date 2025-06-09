@@ -2,6 +2,9 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 from pathlib import Path
+from dash import html
+
+
 
 """ ----------------CONFIGURAÇÃO DE CAMINHO---------------- """
 def create_directory(path: Path):
@@ -66,6 +69,38 @@ boxplot_gastos(df, nome_col='siglaPartido')
 
 
 
+""" ----------------FUNÇÃO QUE RETORNA O INTERPRETADOR DO BOXPLOT---------------- """
+
+def gerar_interpretador_boxplot(df, nome_col='nome', mes=None, ano=None):
+
+    if mes:
+        df = df[df['mes_nome'] == mes]
+    if ano:
+        df = df[df['ano'] == ano]
+
+    df_gastos = df.groupby(nome_col)['valorLiquido'].sum().reset_index()
+
+    q3 = df_gastos['valorLiquido'].quantile(0.75)
+    q1 = df_gastos['valorLiquido'].quantile(0.25)
+    iqr = q3 - q1
+    limite_superior = q3 + 1.5 * iqr
+
+    outliers = df_gastos[df_gastos['valorLiquido'] > limite_superior]
+    
+    percentual_outliers = outliers['valorLiquido'].sum() / df_gastos['valorLiquido'].sum() * 100
+
+    interpretador = html.Div([
+
+        html.H4('Resumo do Boxplot'),
+        html.P(f'75% dos gastos vão até R${q3:,.2f}'.replace(',', 'X').replace('.', ',').replace('X', '.')),
+        html.P(f'Os parlamentares com gastos acima de R${limite_superior:,.2f}'.replace(',', 'X').replace('.', ',').replace('X', '.') + ' são considerados outliers.'),
+        html.P(f'Os valores outliers representam {percentual_outliers:.2f}% do total de gastos.')
+    ])
+
+    return interpretador
+
+
+
 """ ----------------PARLAMENTARES QUE MAIS GASTAM---------------- """
 
 def top_parlamentares_gastos(df, top_n=10):
@@ -99,8 +134,4 @@ def top_parlamentares_gastos(df, top_n=10):
     fig.update_layout(title='Parlamentares com Maior Gasto', title_x=0.5)
 
     return fig
-
-
-
-
 
