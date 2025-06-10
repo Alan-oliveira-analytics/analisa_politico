@@ -39,7 +39,7 @@ csv_path_frente = DATA_DIR / 'membros_frente.csv'
 
 df = pd.read_csv(csv_path)
 df_frente = pd.read_csv(csv_path_frente)
-
+df.head()
 opcoes_meses = [
     'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
     'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
@@ -184,18 +184,48 @@ def layout_pagina_2():
                   }),
 
 
-        html.Div([
-            dcc.Graph(
+      html.Div([
+
+    # Boxplot gráfico (lado esquerdo)
+    html.Div([
+        dcc.Graph(
             id='boxplot_gastos_parlamentar',
             figure=boxplot_gastos(df),
-            )
-        ], style={'width': '50%', 'display': 'inline-block'}),
-        
- 
-    html.Div([
-        gerar_interpretador_boxplot(df)
-    ],  id='interpretador_boxplot', 
-        style={'width': '50%', 'display': 'inline-block'})
-    
-    ], style=content_style)
-])
+            config={'displayModeBar': False},
+        )
+    ], style={
+            'width': '50%',
+            'display': 'flex',
+            'justifyContent': 'center',
+            'alignItems': 'center',
+            'height': '400px'  # altura fixa igual ao card
+    }),
+
+    # Resumo estilo card (lado direito)
+    html.Div(
+        gerar_interpretador_boxplot(df),
+        id='interpretador_boxplot',
+        style={
+            'width': '45%',
+            'backgroundColor': '#ffffff',  # ou '#f8f9fa'
+            'border': '1px solid #dee2e6',
+            'borderRadius': '10px',
+            'padding': '20px',
+            'boxShadow': '0 2px 6px rgba(0,0,0,0.1)',
+            'display': 'flex',
+            'flexDirection': 'column',
+            'justifyContent': 'center',
+            'height': '400px',
+            'marginLeft': '5%'
+        }
+    )
+
+     ], style={
+            'display': 'flex',
+            'justifyContent': 'center',
+            'alignItems': 'center',
+            'marginBottom': '30px'
+        })
+
+            ], style=content_style)
+        ])

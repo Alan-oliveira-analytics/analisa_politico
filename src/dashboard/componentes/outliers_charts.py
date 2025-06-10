@@ -40,7 +40,12 @@ df.head()
 
 """ ----------------BOXPLOT DE GASTOS---------------- """
 
-def boxplot_gastos(df, nome_col='nome'):
+def boxplot_gastos(df, nome_col='nome', mes=None, ano=None):
+
+    if mes:
+        df = df[df['mes_nome'] == mes]
+    if ano:
+        df = df[df['ano'] == ano]
 
     # Agrupa os dados por parlamentar e soma os gastos
     df_gastos = df.groupby(nome_col)['valorLiquido'].sum().reset_index()

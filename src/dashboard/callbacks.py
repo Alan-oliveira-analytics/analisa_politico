@@ -305,26 +305,45 @@ def registro_callback(app):
 
     """Callback texto interpretativo interativo do boxplot"""
 
-    def interpretacao_boxplot(df):
-        
-        @app.callback(
-            Output('interpretador_boxplot', 'children', allow_duplicate=True),
-            Input('drop_mes', 'value'),
-            Input('drop_ano', 'value'),
-            prevent_initial_call=True
+    @app.callback(
+        Output('interpretador_boxplot', 'children', allow_duplicate=True),
+        Input('drop_mes', 'value'),
+        Input('drop_ano', 'value'),
+        prevent_initial_call=True
         )
 
-        def atualizar_interpretador(mes, ano):
-            print(f"[DEBUG CALLBACK] atualizar_interpretador mes={mes} ano={ano}")
-            # Monta um dicionário de filtros
-            filtros = {}
+    def atualizar_interpretador(mes, ano):
 
-            if mes is not None:
-                filtros['mes'] = mes
+        # Monta um dicionário de filtros
+        filtros = {}
 
-            if ano is not None:
-                filtros['ano'] = ano
+        if mes is not None:
+            filtros['mes'] = mes
+
+        if ano is not None:
+            filtros['ano'] = ano
             
-            # Chama a função gerar interpretador boxplot com os filtros corretos
-            return gerar_interpretador_boxplot(df, **filtros)
+        # Chama a função gerar interpretador boxplot com os filtros corretos
+        return gerar_interpretador_boxplot(df, **filtros)
         
+
+    """Callback para o boxplot de gastos"""
+
+    @app.callback(
+        Output('boxplot_gastos_parlamentar', 'figure', allow_duplicate=True),
+        Input('drop_mes', 'value'),
+        Input('drop_ano', 'value'),
+        prevent_initial_call=True
+    )
+    def atualizar_boxplot(mes, ano):
+        # Monta um dicionário de filtros
+        filtros = {}
+
+        if mes is not None:
+            filtros['mes'] = mes
+
+        if ano is not None:
+            filtros['ano'] = ano
+            
+        # Chama a função boxplot_gastos com os filtros corretos
+        return boxplot_gastos(df, **filtros)
