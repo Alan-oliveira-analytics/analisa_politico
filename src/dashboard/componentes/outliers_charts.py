@@ -4,7 +4,7 @@ import plotly.graph_objects as go
 from pathlib import Path
 from dash import html
 
-
+from functions.modulos_analise_dados import tabela_freq_var_str
 
 """ ----------------CONFIGURAÇÃO DE CAMINHO---------------- """
 def create_directory(path: Path):
