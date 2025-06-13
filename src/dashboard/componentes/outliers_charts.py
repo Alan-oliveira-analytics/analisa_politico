@@ -2,9 +2,8 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 from pathlib import Path
-from dash import html
-
-from functions.modulos_analise_dados import tabela_freq_var_str
+from dash import html, dash_table, dcc
+from functions.modulos_analise_dados import tabela_frequencia_bilateral
 
 """ ----------------CONFIGURAÇÃO DE CAMINHO---------------- """
 def create_directory(path: Path):
@@ -140,3 +139,40 @@ def top_parlamentares_gastos(df, top_n=10):
 
     return fig
 
+""" ----------------TABELA DE FREQUÊNCIA BILATERAL---------------- """
+
+def tabela_frequencia(df, mes=None, ano=None):
+    if mes:
+        df = df[df['mes_nome'] == mes]
+    if ano:
+        df = df[df['ano'] == ano]
+
+
+    # Cria a tabela de frequência bilateral
+    tabela = tabela_frequencia_bilateral(df, 'siglaPartido', 'valorLiquido', len(df['siglaPartido'].unique())).reset_index()
+    tabela
+
+    # Cria a tabela Dash
+    table_dash = dash_table.DataTable(
+        data=tabela.to_dict('records'),
+        columns=[{'name': col, 'id': col} for col in tabela.columns],
+        style_table={'height': '400px', 'overflowY': 'auto'},
+        fixed_rows={'headers': True},
+        style_cell={'textAlign': 'left', 'padding': '5px'},
+        style_header={'backgroundColor': '#d7dacf', 'fontWeight': 'bold'},
+        style_data_conditional=[{'if': {'row_index': 'odd'}, 'backgroundColor': '#f9f9f9'}],
+        style_cell_conditional=[
+            {'if': {'column_id': 'siglaPartido'}, 'width': '30%'}
+        ],
+        )
+
+    # Embalar no layout
+    layout_tabela = html.Div([
+        html.H4("Detalhamento de Despesas", style={'textAlign': 'center', 'marginBottom': '16px'}),
+        table_dash
+    ])
+
+    return layout_tabela
+
+
+tabela_frequencia(df)

@@ -8,7 +8,7 @@ import dash_bootstrap_components as dbc
 
 # Gráficos
 from .componentes.indicadores import indicadores
-from .componentes.outliers_charts import boxplot_gastos, top_parlamentares_gastos, gerar_interpretador_boxplot
+from .componentes.outliers_charts import boxplot_gastos, top_parlamentares_gastos, gerar_interpretador_boxplot, tabela_frequencia
 
 
 """ ----------------CONFIGURAÇÃO DE CAMINHO---------------- """
@@ -225,7 +225,12 @@ def layout_pagina_2():
             'justifyContent': 'center',
             'alignItems': 'center',
             'marginBottom': '30px'
-        })
+        }),
 
-            ], style=content_style)
-        ])
+
+    html.Div([
+        tabela_frequencia(df)
+    ], id='tabela_frequencia')
+
+    ], style=content_style)
+    ])
