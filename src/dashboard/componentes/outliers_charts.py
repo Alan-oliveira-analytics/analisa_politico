@@ -150,29 +150,55 @@ def tabela_frequencia(df, mes=None, ano=None):
 
     # Cria a tabela de frequência bilateral
     tabela = tabela_frequencia_bilateral(df, 'siglaPartido', 'valorLiquido', len(df['siglaPartido'].unique())).reset_index()
-    tabela
+    
+    # Conta quantos parlamentares ativos por partido
+    partido_membros = df.groupby('siglaPartido')['nome'].nunique().to_dict()
 
-    # Cria a tabela Dash
+    # Gera tooltips personalizados
+    tooltips = [
+        {
+            'siglaPartido': {
+                'value': f"{partido_membros.get(row['siglaPartido'], 0)} parlamentares em exercício",
+                'type': 'text'
+            }
+        }
+        for _, row in tabela.iterrows()
+    ]
+
+       # Remove index
+    tabela = tabela.drop(columns=['index'], errors='ignore')
+
+    # Renomeia colunas
+    tabela = tabela.rename(columns={
+        'Percentual sobre o total (%)': '% sobre o total',
+        'Percentual acumulado (%)': '% acumulado'
+    })
+
+    # Cria tabela Dash
     table_dash = dash_table.DataTable(
         data=tabela.to_dict('records'),
         columns=[{'name': col, 'id': col} for col in tabela.columns],
+        tooltip_data=tooltips, 
+        tooltip_duration=None,
         style_table={'height': '400px', 'overflowY': 'auto'},
         fixed_rows={'headers': True},
         style_cell={'textAlign': 'left', 'padding': '5px'},
         style_header={'backgroundColor': '#d7dacf', 'fontWeight': 'bold'},
-        style_data_conditional=[{'if': {'row_index': 'odd'}, 'backgroundColor': '#f9f9f9'}],
-        style_cell_conditional=[
-            {'if': {'column_id': 'siglaPartido'}, 'width': '30%'}
+        style_data_conditional=[
+            {'if': {'row_index': 'odd'}, 'backgroundColor': '#f9f9f9'}
         ],
-        )
+        style_cell_conditional=[
+            {'if': {'column_id': 'siglaPartido'}, 'width': '10%'},
+            {'if': {'column_id': 'Gasto Total (R$)'}, 'width': '10%'}
+        ],
+    )
 
     # Embalar no layout
     layout_tabela = html.Div([
-        html.H4("Detalhamento de Despesas", style={'textAlign': 'center', 'marginBottom': '16px'}),
+        html.H4("Detalhamento de Despesas por Partido", style={'textAlign': 'center', 'marginBottom': '16px'}),
         table_dash
     ])
 
     return layout_tabela
-
 
 tabela_frequencia(df)
