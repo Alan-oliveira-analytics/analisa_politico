@@ -5,7 +5,7 @@ from pathlib import Path
 # Importa os componentes do Dash
 from .componentes.gastos_charts import grafico_sazonalidade, grafico_gastos_fornecedor, grafico_gastos_tipo_despesa, indicador_gasto_total, indicador_numero_gastos, ticket_medio_gastos
 
-from .componentes.outliers_charts import boxplot_gastos, top_parlamentares_gastos, gerar_interpretador_boxplot
+from .componentes.outliers_charts import boxplot_gastos, top_parlamentares_gastos, gerar_interpretador_boxplot, tabela_frequencia
 
 from .componentes.frente_charts import grafico_tabela_frentes
 
@@ -347,3 +347,28 @@ def registro_callback(app):
             
         # Chama a função boxplot_gastos com os filtros corretos
         return boxplot_gastos(df, **filtros)
+    
+    
+    """Callback para a tabela de frequência"""
+
+    @app.callback(
+        Output('tabela_frequencia', 'children', allow_duplicate=True),
+        Input('drop_mes', 'value'),
+        Input('drop_ano', 'value'),
+        prevent_initial_call=True
+    )
+    def atualizar_tabela_frequencia(mes, ano):
+        # Monta um dicionário de filtros
+        filtros = {}
+
+        if mes is not None:
+            filtros['mes'] = mes
+
+        if ano is not None:
+            filtros['ano'] = ano
+            
+        # Chama a função tabela_frequencia com os filtros corretos
+        return tabela_frequencia(df, **filtros)
+    
+
+    

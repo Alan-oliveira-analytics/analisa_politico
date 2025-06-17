@@ -175,12 +175,18 @@ def grafico_gastos_tipo_despesa(df, espectro=None, partido=None, politico=None):
     return fig
 
 
-# gráfico 5 - Sazonalidadee
-def grafico_sazonalidade(df, espectro=None, partido=None, politico=None):
+# gráfico 5 - controle
+def grafico_sazonalidade(df, mes=None, ano=None, partido=None, politico=None):
+
     if politico:
         df = df[df['nome'] == politico]
-    if espectro:
-        df = df[df['espectro_politico'] == espectro]
+
+    if mes:
+        df = df[df['mes_nome'] == mes]
+
+    if ano:
+        df = df[df['ano'] == ano]
+        
     if partido:
         df = df[df['siglaPartido'] == partido]
     

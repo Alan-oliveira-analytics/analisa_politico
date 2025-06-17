@@ -53,15 +53,17 @@ sidebar_style = {
     'top': 0,
     'left': 0,
     'bottom': 0,
-    'width': '16%',
+    'width': '280px',
     'padding': '20px',
     'background-color': '#8f9a9c',
 }
 
 content_style = {
-    'margin-left': '16%', 
+    'margin-left': '280px', 
     'padding': '20px',
     'background-color': '#e6e8e3',
+    'minHeight': '100vh',
+    'boxsizing': 'border-box'
 }
 
 
@@ -121,7 +123,10 @@ def layout_pagina_2():
                 figure=indicadores(tipo='media', df=df),
                 style={
                 'display': 'inline-block',
-                'width': '400px',
+                'width': '100%',
+                'minWidth': '220px',
+                'maxWidth': '350px',
+                'flex': '1',
                 'height': '100px',
                 'backgroundColor': '#ffffff',
                 'border': '1px solid #dee2e6',
@@ -136,7 +141,10 @@ def layout_pagina_2():
                 figure=indicadores(tipo='mediana', df=df),
                 style={
                 'display': 'inline-block',
-                'width': '400px',
+                'width': '100%',
+                'minWidth': '220px',
+                'maxWidth': '350px',
+                'flex': '1',
                 'height': '100px',
                 'backgroundColor': '#ffffff',
                 'border': '1px solid #dee2e6',
@@ -151,7 +159,10 @@ def layout_pagina_2():
                 figure=indicadores(tipo='deputados_outliers', df=df),
                 style={
                 'display': 'inline-block',
-                'width': '400px',
+                'width': '100%',
+                'minWidth': '220px',
+                'maxWidth': '350px',
+                'flex': '1',
                 'height': '100px',
                 'backgroundColor': '#ffffff',
                 'border': '1px solid #dee2e6',
@@ -166,7 +177,10 @@ def layout_pagina_2():
                 figure=indicadores(tipo='categoria_mais_gastos', df=df),
                 style={
                 'display': 'inline-block',
-                'width': '400px',
+                'width': '100%',
+                'minWidth': '220px',
+                'maxWidth': '350px',
+                'flex': '1',
                 'height': '100px',
                 'backgroundColor': '#ffffff',
                 'border': '1px solid #dee2e6',
@@ -178,8 +192,9 @@ def layout_pagina_2():
 
         ], style={
                 'display': 'flex',
-                'justifyContent': 'center',    
-                'gap': '10px',                 
+                'flexWrap': 'wrap',
+                'justifyContent': 'center',
+                'gap': '20px',
                 'marginBottom': '30px'
                   }),
 
@@ -194,11 +209,12 @@ def layout_pagina_2():
             config={'displayModeBar': False},
         )
     ], style={
-            'width': '50%',
-            'display': 'flex',
-            'justifyContent': 'center',
-            'alignItems': 'center',
-            'height': '400px'  # altura fixa igual ao card
+            'flex': '1',
+            'minWidth': '400px',
+            'maxWidth': '600px',
+            # 'padding': '10px',
+            'boxSizing': 'border-box',
+            # 'height': '400px'  # altura fixa igual ao card
     }),
 
     # Resumo estilo card (lado direito)
@@ -206,7 +222,9 @@ def layout_pagina_2():
         gerar_interpretador_boxplot(df),
         id='interpretador_boxplot',
         style={
-            'width': '45%',
+            'flex': '1',
+            'minWidth': '350px',
+            'maxWidth': '600px',
             'backgroundColor': '#ffffff',  # ou '#f8f9fa'
             'border': '1px solid #dee2e6',
             'borderRadius': '10px',
@@ -215,16 +233,18 @@ def layout_pagina_2():
             'display': 'flex',
             'flexDirection': 'column',
             'justifyContent': 'center',
-            'height': '400px',
-            'marginLeft': '5%'
+            # 'height': '400px',
         }
     )
 
      ], style={
-            'display': 'flex',
-            'justifyContent': 'center',
-            'alignItems': 'center',
-            'marginBottom': '30px'
+                'display': 'flex',
+                'flexWrap': 'wrap',
+                'justifyContent': 'center',
+                'alignItems': 'center',
+                'gap': '20px',
+                'width': '100%',
+                'marginBottom': '30px'
         }),
 
 
