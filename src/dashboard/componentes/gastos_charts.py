@@ -176,27 +176,30 @@ def grafico_gastos_tipo_despesa(df, espectro=None, partido=None, politico=None):
 
 
 # gráfico 5 - controle
-def grafico_sazonalidade(df, mes=None, ano=None, partido=None, politico=None):
-
+def grafico_sazonalidade(df, ano=None, partido=None, politico=None):
     if politico:
         df = df[df['nome'] == politico]
-
-    if mes:
-        df = df[df['mes_nome'] == mes]
-
     if ano:
         df = df[df['ano'] == ano]
-        
     if partido:
         df = df[df['siglaPartido'] == partido]
-    
+
     # Ignora valores menores ou iguais a 0
     df = df[df['valorLiquido'] > 0]
-    df['ano'] = pd.to_datetime(df['dataDocumento']).dt.year
-    df['mes'] = pd.to_datetime(df['dataDocumento']).dt.month
-    df["mes"] = df["mes"].astype(str)
-    df_graph_5 = df.groupby(['ano', 'mes'])['valorLiquido'].sum().reset_index()
-    # Calcula a média geral e os limites de controle (UCL/LCL)
+
+    # Agrupa por ano e mês e soma os gastos
+    df_graph_5 = df.groupby(['ano', 'mes_nome'])['valorLiquido'].sum().reset_index()
+
+    # Filtra apenas os meses realmente presentes
+    ordem_meses = [
+        'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+        'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+    ]
+    df_graph_5 = df_graph_5[df_graph_5['mes_nome'].isin(ordem_meses)]
+    df_graph_5['mes_nome'] = pd.Categorical(df_graph_5['mes_nome'], categories=ordem_meses, ordered=True)
+    df_graph_5 = df_graph_5.sort_values(by=['ano', 'mes_nome'])
+
+    # Recalcula média e limites de controle apenas com meses presentes
     media_geral = df_graph_5['valorLiquido'].mean()
     std_geral = df_graph_5['valorLiquido'].std()
     ucl = media_geral + 3 * std_geral
@@ -205,36 +208,38 @@ def grafico_sazonalidade(df, mes=None, ano=None, partido=None, politico=None):
     # Destaca pontos acima do UCL
     df_graph_5['acima_ucl'] = df_graph_5['valorLiquido'] > ucl
 
+    # Cria gráfico
     fig = px.line(
         df_graph_5,
-        x='mes',
+        x='mes_nome',
         y='valorLiquido',
         color='ano',
         title='Gráfico de Controle dos Gastos',
-        labels={'valorLiquido': '', 'mes': 'Mês'},
+        labels={'valorLiquido': '', 'mes_nome': ''},
         markers=True,
         text='valorLiquido',
     ).update_yaxes(showticklabels=False)
 
-    # Adiciona linhas de média, UCL e LCL
     fig.add_hline(y=media_geral, line_dash="dash", line_color="#bec3bc", annotation_text="Média", annotation_position="top left")
     fig.add_hline(y=ucl, line_dash="dot", line_color="red", annotation_text="UCL", annotation_position="top left")
     fig.add_hline(y=lcl, line_dash="dot", line_color="orange", annotation_text="LCL", annotation_position="bottom left")
 
-    # Adiciona destaque para pontos acima do UCL
+    # Adiciona destaque para outliers
     for _, row in df_graph_5[df_graph_5['acima_ucl']].iterrows():
         fig.add_scatter(
-            x=[row['mes']],
+            x=[row['mes_nome']],
             y=[row['valorLiquido']],
             mode='markers',
-            marker=dict(color='red', size=12, symbol='star'),
+            marker=dict(color='red', size=12, symbol='x'),
             name='Acima UCL',
             showlegend=False
         )
+
     fig.update_traces(texttemplate='%{y:.2s}', textposition='top center')
     fig.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
-        
+
     return fig
+
 
 
 

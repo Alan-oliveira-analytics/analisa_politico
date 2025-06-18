@@ -136,6 +136,18 @@ def registro_callback(app):
         return grafico_sazonalidade(df, partido=partido)
 
 
+    """Atualiza o gráfico de gastos por sazonalidade baseado no periodo selecionado"""
+
+    @app.callback(
+        Output('grafico_gastos_sazonalidade', 'figure', allow_duplicate=True),
+        Input('drop_ano', 'value'),
+        prevent_initial_call=True
+    )
+    
+    def atualizar_grafico_sazonalidade_periodo(ano):
+        return grafico_sazonalidade(df, ano=ano)
+
+
     """Atualiza o gráfico de frentes parlamentares baseado no político selecionado"""
 
     @app.callback(
