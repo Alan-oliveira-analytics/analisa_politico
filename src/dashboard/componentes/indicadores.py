@@ -43,6 +43,12 @@ def calcular_numero_gastos(df):
 
     return df['valorLiquido'].count()
 
+def calcular_ticket_medio(df):
+    if df['valorLiquido'].count() == 0:
+        return 0
+    return df['valorLiquido'].sum() / df['valorLiquido'].count()
+
+
 def calcular_media(df):
 
     return df['valorLiquido'].mean()
@@ -108,7 +114,7 @@ def gerar_indicador(titulo, valor, prefixo='', valor_formatado=',.2f'):
 """ ----------------INDICADORES---------------- """
 
 
-def indicadores(tipo, df, ano=None, mes=None):
+def indicadores(tipo, df, ano=None, mes=None, politico=None, partido=None):
 
     # filtros para o callback
     if mes:
@@ -116,6 +122,12 @@ def indicadores(tipo, df, ano=None, mes=None):
 
     if ano:
         df = df[df['ano'] == ano]
+
+    if politico:
+        df = df[df['nome'] == politico]
+
+    if partido:
+        df = df[df['siglaPartido'] == partido]
 
 
     if tipo=="media":
@@ -156,4 +168,19 @@ def indicadores(tipo, df, ano=None, mes=None):
             valor=calcular_gasto_total(df),
             prefixo='R$',
             valor_formatado=',.2f'  
+        )
+    
+    elif tipo=="numero_gastos":
+        return gerar_indicador(
+            titulo="Número de Gastos",
+            valor=calcular_numero_gastos(df),
+            valor_formatado=',d'
+        )
+    
+    elif tipo=="ticket_medio":
+        return gerar_indicador(
+            titulo="Ticket Médio",
+            valor=calcular_ticket_medio(df),
+            prefixo='R$',
+            valor_formatado=',.2f'
         )

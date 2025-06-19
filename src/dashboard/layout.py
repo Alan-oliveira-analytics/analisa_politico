@@ -7,9 +7,8 @@ from dash import html, dcc
 import dash_bootstrap_components as dbc
 
 # Gráficos
-from .componentes.gastos_charts import grafico_gastos_fornecedor, grafico_gastos_tipo_despesa, grafico_sazonalidade, indicador_numero_gastos, indicador_gasto_total, ticket_medio_gastos
-from .componentes.frente_charts import grafico_tabela_frentes
-
+from .componentes.gastos_charts import grafico_gastos_fornecedor, grafico_gastos_tipo_despesa, grafico_sazonalidade
+from .componentes.indicadores import indicadores
 
 """ ----------------CONFIGURAÇÃO DE CAMINHO---------------- """
 def create_directory(path: Path):
@@ -134,7 +133,7 @@ def layout_pagina_1():
 
         dcc.Graph(
             id='indicador_gasto_total',
-            figure=indicador_gasto_total(df),
+            figure=indicadores('gasto_total', df),
             style={
                 'display': 'inline-block',
                 'width': '300px',
@@ -145,11 +144,12 @@ def layout_pagina_1():
                 'marginBottom': '20px',
                 'boxShadow': '0 2px 4px rgba(0,0,0,0.05)',
             }
+
         ),
 
         dcc.Graph(
             id='indicador_numero_gastos',
-            figure=indicador_numero_gastos(df),
+            figure=indicadores('numero_gastos', df),
             style={
                 'display': 'inline-block',
                 'width': '300px',
@@ -164,7 +164,7 @@ def layout_pagina_1():
 
         dcc.Graph(
             id='ticket_medio_gastos',
-            figure=ticket_medio_gastos(df),
+            figure=indicadores('ticket_medio', df),
             style={
                 'display': 'inline-block',
                 'width': '300px',

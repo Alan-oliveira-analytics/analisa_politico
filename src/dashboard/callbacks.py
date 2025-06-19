@@ -3,13 +3,13 @@ import pandas as pd
 from pathlib import Path
 
 # Importa os componentes do Dash
-from .componentes.gastos_charts import grafico_sazonalidade, grafico_gastos_fornecedor, grafico_gastos_tipo_despesa, indicador_gasto_total, indicador_numero_gastos, ticket_medio_gastos
+from .componentes.gastos_charts import grafico_sazonalidade, grafico_gastos_fornecedor, grafico_gastos_tipo_despesa
 
-from .componentes.outliers_charts import boxplot_gastos, top_parlamentares_gastos, gerar_interpretador_boxplot, tabela_frequencia
+from .componentes.outliers_charts import boxplot_gastos, gerar_interpretador_boxplot, tabela_frequencia
 
 from .componentes.frente_charts import grafico_tabela_frentes
 
-from .componentes.indicadores import indicadores, calcular_categoria_mais_gastos
+from .componentes.indicadores import indicadores
 
 # Importa o layout das páginas
 from .layout import layout_pagina_1
@@ -205,78 +205,6 @@ def registro_callback(app):
         
         return opacoes_partido
     
-
-    """Atualiza o indicador de gasto total baseado no politico selecionado"""
-
-    @app.callback(
-        Output('indicador_gasto_total', 'figure', allow_duplicate=True),
-        Input('drop_politico', 'value'),
-        prevent_initial_call=True
-    )
-
-    def atualizar_indicador_gasto_total(politico):
-        return indicador_gasto_total(df, politico=politico)
-    
-
-    """Atualiza o indicador de numero de gastos baseado no politico selecionado"""
-
-    @app.callback(
-        Output('indicador_numero_gastos', 'figure', allow_duplicate=True),
-        Input('drop_politico', 'value'),
-        prevent_initial_call=True
-    )
-
-    def atualizar_indicador_numero_gastos(politico):
-        return indicador_numero_gastos(df, politico=politico)
-    
-
-    """Atualiza o indicador ticket médio baseado no politico selecionado"""
-
-    @app.callback(
-        Output('ticket_medio_gastos', 'figure', allow_duplicate=True),
-        Input('drop_politico', 'value'),
-        prevent_initial_call=True
-    )
-
-    def atualizar_ticket_medio_gastos(politico):
-        return ticket_medio_gastos(df, politico=politico)
-    
-
-    """Atualiza o indicador de gasto total baseado no partido selecionado"""
-
-    @app.callback(
-        Output('indicador_gasto_total', 'figure', allow_duplicate=True),
-        Input('drop_partido', 'value'),
-        prevent_initial_call=True
-    )
-
-    def atualizar_indicador_gasto_total(partido):
-        return indicador_gasto_total(df, partido=partido)
-    
-
-    """Atualiza o indicador de numero de gastos baseado no partido selecionado"""
-
-    @app.callback(
-        Output('indicador_numero_gastos', 'figure', allow_duplicate=True),
-        Input('drop_partido', 'value'),
-        prevent_initial_call=True
-    )
-
-    def atualizar_indicador_numero_gastos(partido):
-        return indicador_numero_gastos(df, partido=partido)
-    
-
-    """Atualiza o indicador ticket médio baseado no partido selecionado"""
-
-    @app.callback(
-        Output('ticket_medio_gastos', 'figure', allow_duplicate=True),
-        Input('drop_partido', 'value'),
-        prevent_initial_call=True
-    )
-
-    def atualizar_ticket_medio_gastos(partido):
-        return ticket_medio_gastos(df, partido=partido)
-    
     
     """Função para gerar callback dos indicadores baseado no ano/mes selecionado"""
     
@@ -285,10 +213,12 @@ def registro_callback(app):
             Output(output_id, 'figure', allow_duplicate=True),
             Input('drop_mes', 'value'),
             Input('drop_ano', 'value'),
+            Input('drop_politico', 'value'),
+            Input('drop_partido', 'value'),
             prevent_initial_call=True
         )
 
-        def atualizar_indicador(mes, ano):
+        def atualizar_indicador(mes, ano, politico, partido):
             
             # Monta um dicionário de filtros
             filtros = {}
@@ -298,6 +228,12 @@ def registro_callback(app):
             
             if mes is not None:
                 filtros['mes'] = mes
+
+            if politico is not None:
+                filtros['politico'] = politico
+            
+            if partido is not None:
+                filtros['partido'] = partido
 
             # Chama a função indicadores com os filtros corretos
             return indicadores(tipo, df, **filtros)
@@ -313,6 +249,15 @@ def registro_callback(app):
 
     # atualizar indicador categoria mais gastos
     gerar_callback_indicador('categoria_mais_gastos', 'categoria_mais_gastos', df)
+
+    # atualizar indicador gasto_total
+    gerar_callback_indicador('indicador_gasto_total', 'gasto_total', df)
+
+    # atualizar indicador numero_gastos
+    gerar_callback_indicador('indicador_numero_gastos', 'numero_gastos', df)
+
+    # atualizar indicador ticket_medio
+    gerar_callback_indicador('ticket_medio_gastos', 'ticket_medio', df)
 
 
     """Callback texto interpretativo interativo do boxplot"""
