@@ -7,8 +7,6 @@ from .componentes.gastos_charts import grafico_sazonalidade, grafico_gastos_forn
 
 from .componentes.outliers_charts import boxplot_gastos, gerar_interpretador_boxplot, tabela_frequencia
 
-from .componentes.frente_charts import grafico_tabela_frentes
-
 from .componentes.indicadores import indicadores
 
 # Importa o layout das páginas
@@ -67,28 +65,18 @@ def registro_callback(app):
             ])
 
 
-
-
     """Atualiza o gráfico de gastos por fornecedor baseado no partido selecionado"""
 
     @app.callback(
         Output('grafico_gastos_por_fornecedor', 'children', allow_duplicate=True),
         Input('drop_partido', 'value'),
+        Input('drop_politico', 'value'),
+        Input('drop_ano', 'value'),
+        Input('drop_mes', 'value'),
         prevent_initial_call=True
     )
-    def atualizar_grafico(partido):
-        return grafico_gastos_fornecedor(df, partido=partido)
-
-
-    """Atualiza o gráfico de gastos por fornecedor baseado no politico selecionado"""
-
-    @app.callback(
-        Output('grafico_gastos_por_fornecedor', 'children'),
-        Input('drop_politico', 'value'),
-    )
-    
-    def atualizar_grafico_politico(politico):
-        return grafico_gastos_fornecedor(df, politico=politico)
+    def atualizar_grafico(partido, politico, ano, mes):
+        return grafico_gastos_fornecedor(df, partido=partido, politico=politico, ano=ano, mes=mes)
     
 
     """Atualiza o gráfico de gastos por despesa baseado no partido selecionado"""
@@ -96,21 +84,15 @@ def registro_callback(app):
     @app.callback(
         Output('grafico_gastos_por_despesa', 'figure', allow_duplicate=True),
         Input('drop_partido', 'value'),
+        Input('drop_politico', 'value'),
+        Input('drop_ano', 'value'),
+        Input('drop_mes', 'value'),
         prevent_initial_call=True
     )
 
-    def atualizar_grafico_despesa(partido):
-        return grafico_gastos_tipo_despesa(df, partido=partido)
+    def atualizar_grafico_despesa(partido, politico, ano, mes):
+        return grafico_gastos_tipo_despesa(df, partido=partido, politico=politico, ano=ano, mes=mes)
     
-    
-    """Atualiza o gráfico de gastos por despesa baseado no politico selecionado"""
-
-    @app.callback(
-        Output('grafico_gastos_por_despesa', 'figure'),
-        Input('drop_politico', 'value'),
-    )
-    def atualizar_grafico_despesa_politico(politico):
-        return grafico_gastos_tipo_despesa(df, politico=politico)
     
 
     """Atualiza o gráfico de gastos por sazonalidade baseado no partido selecionado"""
@@ -118,56 +100,14 @@ def registro_callback(app):
     @app.callback(
         Output('grafico_gastos_sazonalidade', 'figure', allow_duplicate=True),
         Input('drop_politico', 'value'),
-        prevent_initial_call=True
-    )
-    
-    def atualizar_grafico_sazonalidade(politico):
-        return grafico_sazonalidade(df, politico=politico)
-    
-
-    """Atualiza o gráfico de gastos por sazonalidade baseado no partido selecionado"""
-
-    @app.callback(
-        Output('grafico_gastos_sazonalidade', 'figure'),
         Input('drop_partido', 'value'),
-    )
-    
-    def atualizar_grafico_sazonalidade_partido(partido):
-        return grafico_sazonalidade(df, partido=partido)
-
-
-    """Atualiza o gráfico de gastos por sazonalidade baseado no periodo selecionado"""
-
-    @app.callback(
-        Output('grafico_gastos_sazonalidade', 'figure', allow_duplicate=True),
         Input('drop_ano', 'value'),
         prevent_initial_call=True
     )
     
-    def atualizar_grafico_sazonalidade_periodo(ano):
-        return grafico_sazonalidade(df, ano=ano)
-
-
-    """Atualiza o gráfico de frentes parlamentares baseado no político selecionado"""
-
-    @app.callback(
-        Output('grafico_frentes_parlamentares', 'figure', allow_duplicate=True),
-        Input('drop_politico', 'value'),
-        prevent_initial_call=True
-    )
+    def atualizar_grafico_sazonalidade(politico, partido, ano):
+        return grafico_sazonalidade(df, politico=politico, partido=partido, ano=ano)
     
-    def atualizar_grafico(politico):
-        return grafico_tabela_frentes(df_frente, politico=politico)
-
-    """Atualiza o gráfico de frentes parlamentares baseado no partido selecionado"""
-    
-    @app.callback(
-        Output('grafico_frentes_parlamentares', 'figure'),
-        Input('drop_partido', 'value')
-    )
-    
-    def atualizar_grafico(partido):
-        return grafico_tabela_frentes(df_frente, partido=partido)
 
 
     """Atualiza as opções do dropdown de políticos baseado no partido selecionado"""
@@ -198,12 +138,12 @@ def registro_callback(app):
 
     def atualizar_opcoes_partido(politico):
         if politico == 'Todos' or politico is None:
-            opacoes_partido = [{'label': i, 'value': i} for i in df['siglaPartido'].unique()]
+            opcoes_partido = [{'label': i, 'value': i} for i in df['siglaPartido'].unique()]
 
         else:
-            opacoes_partido = [{'label': i, 'value': i} for i in df[df['nome'] == politico]['siglaPartido'].unique()]
+            opcoes_partido = [{'label': i, 'value': i} for i in df[df['nome'] == politico]['siglaPartido'].unique()]
         
-        return opacoes_partido
+        return opcoes_partido
     
     
     """Função para gerar callback dos indicadores baseado no ano/mes selecionado"""
@@ -266,10 +206,11 @@ def registro_callback(app):
         Output('interpretador_boxplot', 'children', allow_duplicate=True),
         Input('drop_mes', 'value'),
         Input('drop_ano', 'value'),
+        Input('drop_partido', 'value'),
         prevent_initial_call=True
         )
 
-    def atualizar_interpretador(mes, ano):
+    def atualizar_interpretador(mes, ano, partido):
 
         # Monta um dicionário de filtros
         filtros = {}
@@ -279,6 +220,9 @@ def registro_callback(app):
 
         if ano is not None:
             filtros['ano'] = ano
+        
+        if partido is not None:
+            filtros['partido'] = partido
             
         # Chama a função gerar interpretador boxplot com os filtros corretos
         return gerar_interpretador_boxplot(df, **filtros)
@@ -290,9 +234,10 @@ def registro_callback(app):
         Output('boxplot_gastos_parlamentar', 'figure', allow_duplicate=True),
         Input('drop_mes', 'value'),
         Input('drop_ano', 'value'),
+        Input('drop_partido', 'value'),
         prevent_initial_call=True
     )
-    def atualizar_boxplot(mes, ano):
+    def atualizar_boxplot(mes, ano, partido):
         # Monta um dicionário de filtros
         filtros = {}
 
@@ -302,6 +247,9 @@ def registro_callback(app):
         if ano is not None:
             filtros['ano'] = ano
             
+        if partido is not None:
+            filtros['partido'] = partido
+        
         # Chama a função boxplot_gastos com os filtros corretos
         return boxplot_gastos(df, **filtros)
     

@@ -43,13 +43,19 @@ df.head()
 
 df_unique_id = df.sort_values(['id']).drop_duplicates('id', keep='first')
 
-def grafico_gastos_fornecedor(df, partido=None, politico=None):
+def grafico_gastos_fornecedor(df, partido=None, politico=None, ano=None, mes=None):
 
     if politico:
         df = df[df['nome'] == politico]
 
     if partido:
         df = df[df['siglaPartido'] == partido]
+
+    if ano:
+        df = df[df['ano'] == ano]
+    
+    if mes:
+        df = df[df['mes_nome'] == mes]
 
     # Ignora valores menores ou iguais a 0
     df = df[df['valorLiquido'] > 0]
@@ -143,15 +149,19 @@ def grafico_gastos_fornecedor(df, partido=None, politico=None):
 
 
 # top 10 gastos por tipo de despesa
-def grafico_gastos_tipo_despesa(df, espectro=None, partido=None, politico=None):
+def grafico_gastos_tipo_despesa(df, partido=None, politico=None, ano=None, mes=None):
+    
     if politico:
         df = df[df['nome'] == politico]
 
-    if espectro:
-        df = df[df['espectro_politico'] == espectro]
-
     if partido:
         df = df[df['siglaPartido'] == partido]
+
+    if ano:
+        df = df[df['ano'] == ano]
+
+    if mes:
+        df = df[df['mes_nome'] == mes]
 
     # Ignora valores menores ou iguais a 0
     df = df[df['valorLiquido'] > 0]

@@ -39,12 +39,16 @@ df.head()
 
 """ ----------------BOXPLOT DE GASTOS---------------- """
 
-def boxplot_gastos(df, nome_col='nome', mes=None, ano=None):
+def boxplot_gastos(df, nome_col='nome', mes=None, ano=None, partido=None):
 
     if mes:
         df = df[df['mes_nome'] == mes]
+
     if ano:
         df = df[df['ano'] == ano]
+
+    if partido:
+        df = df[df['siglaPartido'] == partido]
 
     # Agrupa os dados por parlamentar e soma os gastos
     df_gastos = df.groupby(nome_col)['valorLiquido'].sum().reset_index()
@@ -75,12 +79,16 @@ boxplot_gastos(df, nome_col='siglaPartido')
 
 """ ----------------FUNÇÃO QUE RETORNA O INTERPRETADOR DO BOXPLOT---------------- """
 
-def gerar_interpretador_boxplot(df, nome_col='nome', mes=None, ano=None):
+def gerar_interpretador_boxplot(df, nome_col='nome', mes=None, ano=None, partido=None):
 
     if mes:
         df = df[df['mes_nome'] == mes]
+
     if ano:
         df = df[df['ano'] == ano]
+    
+    if partido:
+        df = df[df['siglaPartido'] == partido]
 
     df_gastos = df.groupby(nome_col)['valorLiquido'].sum().reset_index()
 

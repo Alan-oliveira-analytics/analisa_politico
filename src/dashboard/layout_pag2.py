@@ -46,6 +46,9 @@ opcoes_meses = [
 ]
 
 opcoes_ano = df['ano'].unique().tolist()
+opcoes_partido =df['siglaPartido'].unique().tolist()
+opcoes_politico = df['nome'].unique().tolist()
+
 
 # Estilo do layout
 sidebar_style = {
@@ -94,20 +97,37 @@ def layout_pagina_2():
  
 
         # ---------------------------------FILTROS--------------------------------------       
+    # ---------------------------------FILTROS--------------------------------------       
+        html.Div([
+            'Escolha o partido:',
+            dcc.Dropdown(opcoes_partido, value='Todos', id='drop_partido'),
+        ]),
+
+        html.Hr(),
+
+        html.Div([
+            'Escolha o Político:',
+            dcc.Dropdown(opcoes_politico, value='Todos', id='drop_politico'),
+        ]),
+        
+        html.Hr(),
+
         html.Div([
             'Escolha o ano:',
             dcc.Dropdown(opcoes_ano, value='Todos', id='drop_ano'),
         ]),
 
         html.Hr(),
+
         html.Div([
             'Escolha o mês:',
             dcc.Dropdown(opcoes_meses, value='Todos', id='drop_mes'),
         ]),
 
     ],
-        style=sidebar_style
-            ),
+    style=sidebar_style
+    ),
+   
 
     #----------------GRÁFICOS----------------
 
