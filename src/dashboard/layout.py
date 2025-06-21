@@ -94,28 +94,28 @@ def layout_pagina_1():
     # ---------------------------------FILTROS--------------------------------------       
         html.Div([
             'Escolha o partido:',
-            dcc.Dropdown(opcoes_partido, value='Todos', id='drop_partido'),
+            dcc.Dropdown(opcoes_partido, id='drop_partido'),
         ]),
 
         html.Hr(),
 
         html.Div([
             'Escolha o Político:',
-            dcc.Dropdown(opcoes_politico, value='Todos', id='drop_politico'),
+            dcc.Dropdown(opcoes_politico, id='drop_politico'),
         ]),
         
         html.Hr(),
 
         html.Div([
             'Escolha o ano:',
-            dcc.Dropdown(opcoes_ano, value='Todos', id='drop_ano'),
+            dcc.Dropdown(opcoes_ano, id='drop_ano'),
         ]),
 
         html.Hr(),
 
         html.Div([
             'Escolha o mês:',
-            dcc.Dropdown(opcoes_meses, value='Todos', id='drop_mes'),
+            dcc.Dropdown(opcoes_meses, id='drop_mes'),
         ]),
 
     ],

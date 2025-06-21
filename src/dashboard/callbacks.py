@@ -68,12 +68,11 @@ def registro_callback(app):
     """Atualiza o gráfico de gastos por fornecedor baseado no partido selecionado"""
 
     @app.callback(
-        Output('grafico_gastos_por_fornecedor', 'children', allow_duplicate=True),
+        Output('grafico_gastos_por_fornecedor', 'children'),
         Input('drop_partido', 'value'),
         Input('drop_politico', 'value'),
         Input('drop_ano', 'value'),
         Input('drop_mes', 'value'),
-        prevent_initial_call=True
     )
     def atualizar_grafico(partido, politico, ano, mes):
         return grafico_gastos_fornecedor(df, partido=partido, politico=politico, ano=ano, mes=mes)
@@ -82,12 +81,11 @@ def registro_callback(app):
     """Atualiza o gráfico de gastos por despesa baseado no partido selecionado"""
 
     @app.callback(
-        Output('grafico_gastos_por_despesa', 'figure', allow_duplicate=True),
+        Output('grafico_gastos_por_despesa', 'figure'),
         Input('drop_partido', 'value'),
         Input('drop_politico', 'value'),
         Input('drop_ano', 'value'),
         Input('drop_mes', 'value'),
-        prevent_initial_call=True
     )
 
     def atualizar_grafico_despesa(partido, politico, ano, mes):
@@ -98,11 +96,10 @@ def registro_callback(app):
     """Atualiza o gráfico de gastos por sazonalidade baseado no partido selecionado"""
 
     @app.callback(
-        Output('grafico_gastos_sazonalidade', 'figure', allow_duplicate=True),
+        Output('grafico_gastos_sazonalidade', 'figure'),
         Input('drop_politico', 'value'),
         Input('drop_partido', 'value'),
         Input('drop_ano', 'value'),
-        prevent_initial_call=True
     )
     
     def atualizar_grafico_sazonalidade(politico, partido, ano):
@@ -115,7 +112,6 @@ def registro_callback(app):
     @app.callback(
         Output('drop_politico', 'options'),
         Input('drop_partido', 'value'),
-        prevent_initial_call=True
     )
     
     def atualizar_opcoes_politico(partido):
@@ -133,7 +129,6 @@ def registro_callback(app):
     @app.callback(
         Output('drop_partido', 'options'),
         Input('drop_politico', 'value'),
-        prevent_initial_call=True
     )
 
     def atualizar_opcoes_partido(politico):
@@ -150,12 +145,11 @@ def registro_callback(app):
     
     def gerar_callback_indicador(output_id, tipo, df):
         @app.callback(
-            Output(output_id, 'figure', allow_duplicate=True),
+            Output(output_id, 'figure'),
             Input('drop_mes', 'value'),
             Input('drop_ano', 'value'),
             Input('drop_politico', 'value'),
             Input('drop_partido', 'value'),
-            prevent_initial_call=True
         )
 
         def atualizar_indicador(mes, ano, politico, partido):
@@ -203,11 +197,10 @@ def registro_callback(app):
     """Callback texto interpretativo interativo do boxplot"""
 
     @app.callback(
-        Output('interpretador_boxplot', 'children', allow_duplicate=True),
+        Output('interpretador_boxplot', 'children'),
         Input('drop_mes', 'value'),
         Input('drop_ano', 'value'),
         Input('drop_partido', 'value'),
-        prevent_initial_call=True
         )
 
     def atualizar_interpretador(mes, ano, partido):
@@ -231,11 +224,10 @@ def registro_callback(app):
     """Callback para o boxplot de gastos"""
 
     @app.callback(
-        Output('boxplot_gastos_parlamentar', 'figure', allow_duplicate=True),
+        Output('boxplot_gastos_parlamentar', 'figure'),
         Input('drop_mes', 'value'),
         Input('drop_ano', 'value'),
         Input('drop_partido', 'value'),
-        prevent_initial_call=True
     )
     def atualizar_boxplot(mes, ano, partido):
         # Monta um dicionário de filtros
@@ -257,10 +249,9 @@ def registro_callback(app):
     """Callback para a tabela de frequência"""
 
     @app.callback(
-        Output('tabela_frequencia', 'children', allow_duplicate=True),
+        Output('tabela_frequencia', 'children'),
         Input('drop_mes', 'value'),
         Input('drop_ano', 'value'),
-        prevent_initial_call=True
     )
     def atualizar_tabela_frequencia(mes, ano):
         # Monta um dicionário de filtros

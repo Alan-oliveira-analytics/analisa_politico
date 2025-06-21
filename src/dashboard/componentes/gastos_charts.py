@@ -43,24 +43,19 @@ df.head()
 
 df_unique_id = df.sort_values(['id']).drop_duplicates('id', keep='first')
 
-def grafico_gastos_fornecedor(df, partido=None, politico=None, ano=None, mes=None):
 
+def grafico_gastos_fornecedor(df, partido=None, politico=None, ano=None, mes=None):
     if politico:
         df = df[df['nome'] == politico]
-
     if partido:
         df = df[df['siglaPartido'] == partido]
-
     if ano:
         df = df[df['ano'] == ano]
-    
     if mes:
         df = df[df['mes_nome'] == mes]
 
-    # Ignora valores menores ou iguais a 0
     df = df[df['valorLiquido'] > 0]
 
-    # Cria links clicáveis para a coluna 'Nota fiscal'
     df['link_nota'] = df['urlDocumento'].apply(
         lambda url: f'[Ver Nota]({url})' if pd.notnull(url) else ''
     )
@@ -79,6 +74,7 @@ def grafico_gastos_fornecedor(df, partido=None, politico=None, ano=None, mes=Non
         'maxHeight': '400px',
         'overflowY': 'auto',
         'overflowX': 'auto',
+        'minWidth': '100%',
         'border': '1px solid white',
     }
 
@@ -86,7 +82,9 @@ def grafico_gastos_fornecedor(df, partido=None, politico=None, ano=None, mes=Non
         'textAlign': 'left',
         'fontSize': '13px',
         'padding': '6px',
-        'whiteSpace': 'normal',
+        'whiteSpace': 'pre-wrap',
+        'overflow': 'hidden',
+        'textOverflow': 'ellipsis',
         'border': '1px solid white',
     }
 
@@ -101,29 +99,27 @@ def grafico_gastos_fornecedor(df, partido=None, politico=None, ano=None, mes=Non
     ] + [
         {
             'if': {'column_id': 'valorLiquido'},
-            'textAlign': 'right',
-            'backgroundColor': '#e6e8e3',
+            'textAlign': 'right'
         },
         {
             'if': {'column_id': 'link_nota'},
-            'textAlign': 'center',
-            'backgroundColor': '#e6e8e3',
+            'textAlign': 'center'
         },
         {
             'if': {'column_id': 'cnpjCpfFornecedor'},
-            'backgroundColor': '#e6e8e3',
+            'textAlign': 'right'
         }
     ]
 
     style_data_conditional = [
         {
-            'if': {'column_id': 'valorLiquido'},
+            'if': {'column_id': col},
             'backgroundColor': '#e6e8e3',
-        }
+        } for col in ['valorLiquido', 'link_nota', 'cnpjCpfFornecedor', 'nome', 'nomeFornecedor']
     ]
 
     style_header = {
-        'backgroundColor': '#65727a',
+        'backgroundColor': '#5f676b',
         'color': 'white',
         'fontWeight': 'bold',
         'textAlign': 'center',
@@ -133,16 +129,22 @@ def grafico_gastos_fornecedor(df, partido=None, politico=None, ano=None, mes=Non
     table = dash_table.DataTable(
         columns=columns,
         data=df.to_dict('records'),
+        page_size=10,
         style_table=style_table,
         fixed_rows={'headers': True},
         style_cell=style_cell,
         style_cell_conditional=style_cell_conditional,
         style_data_conditional=style_data_conditional,
-        style_header=style_header,
+        style_header=style_header
     )
 
     return html.Div([
-        html.H4("Detalhamento de Despesas", style={'textAlign': 'center', 'marginBottom': '16px'}),
+        html.H4("Detalhamento de Despesas", style={
+            'textAlign': 'center',
+            'marginBottom': '16px',
+            'color': '#23395d',
+            'fontWeight': 'bold'
+        }),
         table
     ])
 
